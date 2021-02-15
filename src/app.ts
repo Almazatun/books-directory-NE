@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import indexRouter from "./routes/index";
+import authors from "./routes/authors";
 
 //Create express app
 const app = express();
@@ -32,6 +33,7 @@ app.use(bodyParser.json());
 
 //Routes
 app.use("/", indexRouter);
+app.use("/authors", authors);
 
 //Cors
 const HOST: string | number = process.env.HOST || "http://localhost:3000";
