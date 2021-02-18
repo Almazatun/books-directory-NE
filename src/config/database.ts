@@ -1,0 +1,1 @@
+export const DB_HOST: string = process.env.DB_HOST || "mongodb://localhost/db_url"
