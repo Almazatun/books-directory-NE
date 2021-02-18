@@ -1,5 +1,8 @@
 import mongoose, {Schema, Document} from 'mongoose'
 
+//Storage images path
+export const coverImageBasePath = "uploads/bookCovers"
+
 export interface IBook extends Document {
     _id: Schema.Types.ObjectId
     title: string
@@ -37,12 +40,13 @@ const BookSchema: Schema = new Schema({
     createAt: {
         type: String,
         required: true,
-        default: Date.now()
+        default: new Date().toISOString()
     },
     coverImageName: {
         type: String,
         required: true
     }
 })
+
 
 export default mongoose.model<IBook>('Book', BookSchema)
