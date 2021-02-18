@@ -31,11 +31,15 @@ const validatorCreateNewBook = (
     }
 }
 
-const validatorCreateNewAuthor = (name: string) => {
+const validatorCreateNewAuthor = (firstName: string, lastName: string) => {
     let errors: Errors = {}
-    if (name.trim() === '') {
-        errors.name = 'Author name can not be empty 🤬';
+    if (firstName.trim() === '') {
+        errors.firstName = 'First name should be required 🤬';
     }
+    if (lastName.trim() === '') {
+        errors.lastName = 'Last name should be required 🤬';
+    }
+
 
     return {
         errors: errors,
