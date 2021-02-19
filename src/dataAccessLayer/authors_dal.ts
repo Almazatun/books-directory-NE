@@ -1,0 +1,38 @@
+import Author from "../models/author";
+
+class Authors {
+    async saveNewUserDB(firstName: string, lastName: string) {
+        const newAuthor = new Author({
+            fistName: firstName,
+            lastName: lastName,
+        })
+
+        const savedUser = await newAuthor.save()
+
+        return savedUser
+    }
+
+    async deleteUserDB(authorId: string) {
+        const deleteUser = await Author.findByIdAndDelete({_id: authorId})
+
+        return deleteUser
+    }
+    //In the method included searching option
+    async getAllAuthors () {
+        const authors = await Author.find()
+
+        return authors
+    }
+
+    async searchAuthorsByFistName (firstName: string) {
+        //Use Regular expression to find particular author or authors
+        const searchAuthor = new RegExp(firstName, "i")
+
+        const foundAuthors = await Author.find({name: searchAuthor})
+
+        return foundAuthors
+    }
+}
+
+const AuthorsDAL = new Authors
+export default AuthorsDAL
