@@ -2,22 +2,23 @@ import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
-import indexRouter from "./routes/index";
-import authors from "./routes/authors";
+import IndexRouter from "./routes/index";
+import Authors from "./routes/authors";
+import Books from "./routes/books";
+import {DB_HOST} from "./config/database";
+import {CORS_ALLOW_HOST, CORS_WITH_CREDENTIALS} from "./config/cors";
+import {PORT} from "./config";
 
 //Create express app
 const app = express();
+app.use('/public' ,express.static('public'))
 
 //Config Object to Avoid Deprecation Warnings
 const config = { useNewUrlParser: true, useUnifiedTopology: true };
 
 //MongoDB
-const MONGODB = process.env.MONGODB || "mongodb://localhost/somename";
-
-console.log(MONGODB);
-
 //Connection database
-mongoose.connect(MONGODB, config);
+mongoose.connect(DB_HOST, config);
 
 //Store Connection Object
 const db = mongoose.connection;
@@ -29,23 +30,22 @@ db.once("open", () => {
   console.log(err);
 });
 
+//BodyParser
 app.use(bodyParser.json());
 
-//Routes
-app.use("/", indexRouter);
-app.use("/authors", authors);
-
 //Cors
-const HOST: string | number = process.env.HOST || "http://localhost:3000";
 app.use(
   cors({
-    credentials: true,
-    origin: HOST,
+    credentials: CORS_WITH_CREDENTIALS,
+    origin: CORS_ALLOW_HOST,
   })
 );
 
-//Port
-const PORT: string | number = process.env.PORT || 3000;
+//Routes
+app.use("/", IndexRouter);
+app.use("/authors", Authors);
+app.use("/books", Books);
+
 
 //Starting server
 app.listen(PORT, () => {
