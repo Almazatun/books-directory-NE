@@ -15,20 +15,26 @@ const createNewBook = async (req: Request, res: Response) => {
     await BooksBLL.createNewBook(req.body, res)
 }
 
+//DeleteBook
 const deleteBook = async (req: Request, res: Response) => {
 
     await BooksBLL.deleteBook(req.params.id, res)
 }
 
+//Upload image a new book
 const uploadBookImage = async (req: Request, res: Response) => {
-    console.log("UPLOAD_BOOK_IMAGE")
-    console.log("UPLOAD_BOOK_FILE", req.file)
     await BooksBLL.uploadBookImage(req, res)
+}
+//Delete uploaded image file when session expires
+const deleteUploadedFile = async (req: Request, res: Response) => {
+
+    await BooksBLL.deleteUploadedBookImage(res)
 }
 
 export default {
     getAllBooks,
     createNewBook,
     deleteBook,
-    uploadBookImage
+    uploadBookImage,
+    deleteUploadedFile
 }
