@@ -1,15 +1,16 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import controller from '../controllers/authors'
+
 
 const router = express.Router();
 
 //Get all authors
-router.get("/", (req: Request, res: Response) => {
-  res.send("all Authors");
-});
+router.get("/", controller.getAllAuthors)
 
 //Create new author
-router.post("/new", (req: Request, res: Response) => {
-  res.send("New author");
-});
+router.post("/new", controller.createNewAuthor)
+
+//Delete Author
+router.delete("/delete/:id", controller.deleteAuthor)
 
 export default router;
