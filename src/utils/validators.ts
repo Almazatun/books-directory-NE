@@ -4,7 +4,6 @@ const validatorCreateNewBook = (
     title: string,
     pageCount: number,
     publishDate: string,
-    authorName: string
 ) => {
     let errors: Errors = {}
     if (title.trim() === '') {
@@ -16,18 +15,13 @@ const validatorCreateNewBook = (
         errors.pageCount = 'Page count should be greater then 0️⃣';
     }
 
-    if (publishDate.trim() === '') {
+    if (!publishDate) {
         errors.publishDate = 'Publish date should be required 🤬';
     }
 
-    if (authorName.trim() === '') {
-        errors.publishDate = 'Author name should be required 🤬';
-    }
-
-
     return {
         errors: errors,
-        valid: Object.keys(errors).length < 1
+        valid: Object.keys(errors).length <= 1
     }
 }
 
@@ -43,7 +37,7 @@ const validatorCreateNewAuthor = (firstName: string, lastName: string) => {
 
     return {
         errors: errors,
-        valid: Object.keys(errors).length < 1
+        valid: Object.keys(errors).length <= 1
     }
 }
 
