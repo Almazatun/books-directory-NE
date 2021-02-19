@@ -4,11 +4,18 @@ import {Response, Request} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book";
+import {urlSplit} from "../utils/urlSplit";
 
 const {validatorCreateNewBook} = validators
 const uploadPath = path.join('public', coverImageBasePath)
 
 class Books {
+    //Dangerous idea | Bad idea
+    _uploadedFile: Array<string>;
+    constructor() {
+        this._uploadedFile = []
+    }
+
     async getAllBooks(res: Response) {
         try {
             const books = await BooksDAL.getAllBooks()
@@ -23,7 +30,9 @@ class Books {
 
     async createNewBook(newBookData: IBookData, res: Response) {
         const {title, pageCount, publishDate} = newBookData
+
         const {errors, valid} = validatorCreateNewBook(title, pageCount, publishDate)
+
         try {
             if (valid) {
                 // Make sure the book does not already exist in database storage
@@ -35,7 +44,6 @@ class Books {
                         message: 'Bad request 🔴'
                     })
                 } else {
-
                     const savedBook = await BooksDAL.createNewBook(newBookData)
 
                     res.status(200).json({
@@ -52,7 +60,7 @@ class Books {
         } catch (error) {
             if (Object.keys(error).length >= 1) {
                 res.status(500).json({
-                    errors: [{...error}],
+                    errors: [error],
                     message: "Some error"
                 })
             } else {
@@ -68,10 +76,13 @@ class Books {
 
         const deletedBookResult = await BooksDAL.deleteBook(bookId)
 
+        //Last part of string the coverImageName property deleting book
+        const lastPartOfString = urlSplit(deletedBookResult!.coverImageName)
+
         try {
-            if (deletedBookResult) {
+            if (deletedBookResult && lastPartOfString) {
                 //Delete image file
-                fs.unlinkSync(path.join(uploadPath, deletedBookResult.coverImageName))
+                fs.unlinkSync(path.join(uploadPath, lastPartOfString))
                 //file removed
                 res.json({
                     book: deletedBookResult,
@@ -93,12 +104,17 @@ class Books {
 
     async uploadBookImage(req: Request, res: Response) {
 
+        const url = req.protocol + '://' + req.get('host')
         try {
-            if (req.file !== null) {
+            if (req.file !== null && req.file !== undefined) {
                 const file = await req.file
+
+                //Save upload file name
+                this._uploadedFile.push(file.filename)
+
                 res.status(200).json({
                     fileName: file.filename,
-                    filePath: `uploads/${file.filename}`,
+                    filePath: `${url}/${uploadPath}/${file.filename}`,
                     message: 'File uploaded successfully 🟢'
                 })
             } else {
@@ -108,9 +124,27 @@ class Books {
                 })
             }
         } catch (error) {
-            console.log("UPLOAD_BOOK_IMAGE_REJECT")
             res.status(500).json({
                 errors: [...error],
+                message: 'Some error 🔴'
+            })
+        }
+    }
+
+    //Delete uploaded image file when session expired
+    async deleteUploadedBookImage(res: Response) {
+        try {
+            if (this._uploadedFile.length >= 1) {
+                //Delete uploaded image
+                fs.unlinkSync(path.join(uploadPath, this._uploadedFile[0]))
+            }
+            res.status(400).json({
+                errors: ['Session expired'],
+                message: 'Please upload book image again'
+            })
+        } catch (error) {
+            res.status(500).json({
+                errors: [error],
                 message: 'Some error 🔴'
             })
         }
