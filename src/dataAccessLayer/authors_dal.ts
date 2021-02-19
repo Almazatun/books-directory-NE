@@ -28,7 +28,7 @@ class Authors {
         //Use Regular expression to find particular author or authors
         const searchAuthor = new RegExp(firstName, "i")
 
-        const foundAuthors = await Author.find({name: searchAuthor})
+        const foundAuthors = await Author.find({fistName: searchAuthor})
 
         return foundAuthors
     }
