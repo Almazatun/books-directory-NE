@@ -14,15 +14,15 @@ class Books {
 
     async createNewBook(newBookData: IBookData) {
 
-        const {title, pageCount, publishDate, authorId, description} = newBookData
+        const {title, pageCount, publishDate, author, description, bookImg} = newBookData
 
         const newBook = new Book({
             title: title,
-            authorName: authorId,
             description: description,
-            pageCount: pageCount,
             publishDate: publishDate,
-            coverImageName: 'sadasdsa'
+            authorName: author,
+            pageCount: pageCount,
+            coverImageName: bookImg
         })
 
         const savedBook = await newBook.save()
@@ -45,6 +45,7 @@ export interface IBookData {
     title: string
     description: string
     publishDate: string
-    authorId: string //authorName
+    author: string //authorName
     pageCount: number
+    bookImg: string
 }
