@@ -10,10 +10,9 @@ const {validatorCreateNewBook} = validators
 const uploadPath = path.join('public', coverImageBasePath)
 
 class Books {
-    //Dangerous idea | Bad idea
-    _uploadedFile: Array<string>;
-    constructor() {
-        this._uploadedFile = []
+    private uploadedFile: Array<string>;
+    constructor(uploadImg: Array<string> = []) {
+        this.uploadedFile = uploadImg
     }
 
     async getAllBooks(res: Response) {
@@ -110,7 +109,7 @@ class Books {
                 const file = await req.file
 
                 //Save upload file name
-                this._uploadedFile.push(file.filename)
+                this.uploadedFile.push(file.filename)
 
                 res.status(200).json({
                     fileName: file.filename,
@@ -132,16 +131,22 @@ class Books {
     }
 
     //Delete uploaded image file when session expired
-    async deleteUploadedBookImage(res: Response) {
+    async deleteUploadedBookImage(fileName: string ,res: Response) {
+
+        const isUploadedFile = this.uploadedFile.find((uploadedFile) => {
+            return uploadedFile === fileName
+        })
+
         try {
-            if (this._uploadedFile.length >= 1) {
+            if (isUploadedFile) {
                 //Delete uploaded image
-                fs.unlinkSync(path.join(uploadPath, this._uploadedFile[0]))
+                fs.unlinkSync(path.join(uploadPath, isUploadedFile))
+
+                res.status(400).json({
+                    errors: ['Session expired'],
+                    message: 'Please upload book image again'
+                })
             }
-            res.status(400).json({
-                errors: ['Session expired'],
-                message: 'Please upload book image again'
-            })
         } catch (error) {
             res.status(500).json({
                 errors: [error],

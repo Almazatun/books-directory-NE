@@ -28,7 +28,7 @@ const uploadBookImage = async (req: Request, res: Response) => {
 //Delete uploaded image file when session expires
 const deleteUploadedFile = async (req: Request, res: Response) => {
 
-    await BooksBLL.deleteUploadedBookImage(res)
+    await BooksBLL.deleteUploadedBookImage(req.body.fileName ,res)
 }
 
 export default {

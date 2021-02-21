@@ -14,7 +14,7 @@ router.post("/new", controller.createNewBook)
 router.post("/upload", upload.single('cover'), controller.uploadBookImage)
 
 //Delete uploaded image file
-router.delete("/uploaded", controller.deleteUploadedFile)
+router.delete("/uploaded/delete", controller.deleteUploadedFile)
 
 //Delete book
 router.delete("/delete/:id" ,controller.deleteBook)
