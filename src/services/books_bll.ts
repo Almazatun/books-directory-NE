@@ -142,6 +142,11 @@ class Books {
                 //Delete uploaded image
                 fs.unlinkSync(path.join(uploadPath, isUploadedFile))
 
+                //Delete uploaded file name from the this.uploadedFile array
+                const indexUploadedFile = this.uploadedFile.indexOf(fileName)
+
+                this.uploadedFile.splice(indexUploadedFile, 1)
+
                 res.status(400).json({
                     errors: ['Session expired'],
                     message: 'Please upload book image again'
