@@ -11,7 +11,7 @@ export interface IBook extends Document {
     pageCount: number
     publishDate: string
     createAt: string
-    coverImageName: string
+    coverImageName: Schema.Types.ObjectId
     _doc?: object
 }
 
@@ -27,7 +27,7 @@ const BookSchema: Schema = new Schema({
         type: String,
         required: true
     },
-    authorName: {
+    authorBook: {
         //Referencing to Authors collections
         type: Schema.Types.ObjectId,
         required: true,
@@ -42,9 +42,10 @@ const BookSchema: Schema = new Schema({
         required: true,
         default: new Date().toISOString()
     },
-    coverImageName: {
-        type: String,
-        required: true
+    imageBook: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Image'
     }
 })
 
