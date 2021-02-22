@@ -1,5 +1,4 @@
 import validators from "../utils/validators";
-import Author from "../models/author";
 import AuthorsDAL from "../dataAccessLayer/authors_dal";
 import {Response} from "express";
 
@@ -12,9 +11,9 @@ class Authors {
         try {
             if (valid) {
                 // Make sure the author does not already exist in database storage
-                const foundedAuthorLastName = await Author.findOne({lastName}).exec()
+                const foundAuthorByLastName = await AuthorsDAL.findOneAuthorByLastName(lastName)
 
-                if (foundedAuthorLastName) {
+                if (foundAuthorByLastName) {
                     res.status(400).json({
                         errors: ['This is author already exist 👷‍♂️'],
                     })

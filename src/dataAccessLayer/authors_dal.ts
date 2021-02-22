@@ -32,6 +32,13 @@ class Authors {
 
         return foundAuthors
     }
+
+    async findOneAuthorByLastName (lastName: string) {
+
+        const foundAuthor = await Author.findOne({lastName}).exec()
+
+        return foundAuthor
+    }
 }
 
 const AuthorsDAL = new Authors
