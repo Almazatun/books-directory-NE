@@ -5,6 +5,7 @@ import cors from "cors";
 import IndexRouter from "./routes/index";
 import Authors from "./routes/authors";
 import Books from "./routes/books";
+import Images from "./routes/images";
 import {DB_HOST} from "./config/database";
 import {CORS_ALLOW_HOST, CORS_WITH_CREDENTIALS} from "./config/cors";
 import {PORT} from "./config";

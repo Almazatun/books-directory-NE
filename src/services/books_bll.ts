@@ -3,7 +3,7 @@ import BooksDAL, {IBookData} from "../dataAccessLayer/books_dal";
 import {Response, Request} from "express";
 import fs from "fs";
 import path from "path";
-import {coverImageBasePath} from "../models/book";
+import {coverImageBasePath} from "../models/book_model";
 import {urlSplit} from "../utils/urlSplit";
 
 const {validatorCreateNewBook} = validators

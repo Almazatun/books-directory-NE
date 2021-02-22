@@ -1,4 +1,4 @@
-import Author from "../models/author";
+import Author from "../models/author_model";
 
 class Authors {
     async saveNewUserDB(firstName: string, lastName: string) {

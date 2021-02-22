@@ -1,5 +1,5 @@
 import express from "express";
-import controller from '../controllers/books'
+import controller from '../controllers/books_controller'
 import {upload} from "../utils/multerStorage";
 
 const router = express.Router();

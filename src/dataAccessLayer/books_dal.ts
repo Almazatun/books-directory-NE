@@ -1,4 +1,4 @@
-import Book from "../models/book";
+import Book from "../models/book_model";
 
 class Books {
     async getAllBooks() {

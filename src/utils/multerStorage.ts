@@ -1,5 +1,5 @@
 import path from "path";
-import {coverImageBasePath} from "../models/book";
+import {coverImageBasePath} from "../models/book_model";
 import multer from "multer";
 import {Request} from "express";
 import {uuid} from "uuidv4";
