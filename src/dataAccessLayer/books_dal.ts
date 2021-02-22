@@ -2,7 +2,9 @@ import Book from "../models/book_model";
 
 class Books {
     async getAllBooks() {
-        const books = await Book.find().populate('authorName', ['fistName', 'lastName'])
+        const books = await Book.find()
+            .populate('authorBook', ['fistName', 'lastName'])
+            .populate('imageBook', ['fileName', 'filePath'])
         return books
     }
 
@@ -14,15 +16,15 @@ class Books {
 
     async createNewBook(newBookData: IBookData) {
 
-        const {title, pageCount, publishDate, author, description, bookImg} = newBookData
+        const {title, pageCount, publishDate, authorBook, description, imageBook} = newBookData
 
         const newBook = new Book({
-            title: title,
-            description: description,
-            publishDate: publishDate,
-            authorName: author,
-            pageCount: pageCount,
-            coverImageName: bookImg
+            title,
+            description: description !== undefined && description !== null ? description : '',
+            publishDate,
+            authorBook,
+            pageCount,
+            imageBook
         })
 
         const savedBook = await newBook.save()
@@ -45,7 +47,7 @@ export interface IBookData {
     title: string
     description: string
     publishDate: string
-    author: string //authorName
+    authorBook: string
     pageCount: number
-    bookImg: string
+    imageBook: string
 }
