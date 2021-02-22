@@ -21,20 +21,8 @@ const deleteBook = async (req: Request, res: Response) => {
     await BooksBLL.deleteBook(req.params.id, res)
 }
 
-//Upload image a new book
-const uploadBookImage = async (req: Request, res: Response) => {
-    await BooksBLL.uploadBookImage(req, res)
-}
-//Delete uploaded image file when session expires
-const deleteUploadedFile = async (req: Request, res: Response) => {
-
-    await BooksBLL.deleteUploadedBookImage(req.body.fileName ,res)
-}
-
 export default {
     getAllBooks,
     createNewBook,
-    deleteBook,
-    uploadBookImage,
-    deleteUploadedFile
+    deleteBook
 }
