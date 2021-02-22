@@ -46,6 +46,7 @@ app.use(
 app.use("/", IndexRouter);
 app.use("/authors", Authors);
 app.use("/books", Books);
+app.use("/images", Images);
 
 
 //Starting server
