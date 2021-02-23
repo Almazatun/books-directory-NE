@@ -6,12 +6,12 @@ export const coverImageBasePath = "uploads/bookCovers"
 export interface IBook extends Document {
     _id: Schema.Types.ObjectId
     title: string
-    authorName: Schema.Types.ObjectId
+    authorBook: Schema.Types.ObjectId
     description: string
     pageCount: number
     publishDate: string
     createAt: string
-    coverImageName: Schema.Types.ObjectId
+    imageBook: Schema.Types.ObjectId
     _doc?: object
 }
 
