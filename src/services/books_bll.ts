@@ -11,10 +11,42 @@ const uploadPath = path.join('public', coverImageBasePath)
 
 class Books {
 
-    async getAllBooks(res: Response) {
+    async getAllBooks(title: string | any, publishBefore: string | any, publishAfter: string | any, res: Response) {
+        let books: unknown
+
+        let searchTitle: string = title ? title : ''
+        let searchPublishBefore: string = publishBefore ? publishBefore : ''
+        let searchPublishAfter: string = publishAfter ? publishAfter : ''
+
         try {
-            const books = await BooksDAL.getAllBooks()
-            res.json(books)
+            if (title !== null && title !== "" && title !== undefined) {
+                console.log('SEARCH_OPTIONS')
+                //Search option
+                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                res.status(200).json({
+                    books: books,
+                    searchingOption: title
+                })
+            } else if (publishBefore !== null && publishBefore !== "" && publishBefore !== undefined) {
+                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                res.status(200).json({
+                    books: books,
+                    searchingOption: title
+                })
+            } else if (publishAfter !== null && publishAfter !== "" && publishAfter !== undefined) {
+                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                res.status(200).json({
+                    books: books,
+                    searchingOption: title
+                })
+            } else {
+                console.log('GET_ALL_BOOKS')
+                books = await BooksDAL.getAllBooks()
+                res.status(200).json({
+                    books: books,
+                    searchingOption: ''
+                })
+            }
         } catch (error) {
             res.status(500).json({
                 errors: [{...error}],
@@ -74,7 +106,7 @@ class Books {
         try {
             if (deletedBookResult) {
                 //Delete image
-                const deletedImage = await ImagesDAL.deleteImage(String(deletedBookResult.coverImageName))
+                const deletedImage = await ImagesDAL.deleteImage(String(deletedBookResult.imageBook))
 
                 if (deletedImage)  {
                     //Delete image file

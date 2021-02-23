@@ -1,10 +1,13 @@
-import {Request, Response} from "express";
+import {query, Request, Response} from "express";
 import BooksBLL from "../services/books_bll";
 
 
 //Get all books or particular book
 const getAllBooks = async (req: Request, res: Response) => {
-    await BooksBLL.getAllBooks(res)
+
+    const {title, publishBefore, publishAfter}: { [key: string]: unknown } = req.query
+
+    await BooksBLL.getAllBooks(title, publishBefore, publishAfter, res)
 }
 
 //Crate new book

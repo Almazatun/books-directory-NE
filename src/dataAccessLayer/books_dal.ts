@@ -37,6 +37,32 @@ class Books {
 
         return deletedBook
     }
+
+    async searchBooks(title: string, publishBefore: string, publishAfter: string) {
+
+        const searchBook = new RegExp(title, "i")
+
+        let foundBooks: unknown
+
+        if (publishBefore && publishBefore !== '') {
+            console.log('PUBLISH_BEFORE')
+            foundBooks = await Book.find({publishDate: publishBefore})
+                .populate('authorBook', ['fistName', 'lastName'])
+                .populate('imageBook', ['fileName', 'filePath'])
+        } else if (publishAfter && publishAfter !== '') {
+            console.log('PUBLISH_AFTER')
+            foundBooks = await Book.find({publishDate: publishAfter})
+                .populate('authorBook', ['fistName', 'lastName'])
+                .populate('imageBook', ['fileName', 'filePath'])
+        } else if (title && title !== '') {
+            foundBooks = await Book.find({title: searchBook})
+                .populate('authorBook', ['fistName', 'lastName'])
+                .populate('imageBook', ['fileName', 'filePath'])
+        }
+
+
+        return foundBooks
+    }
 }
 
 const BooksDAL = new Books()
