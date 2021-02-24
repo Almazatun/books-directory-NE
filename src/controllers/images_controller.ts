@@ -1,8 +1,8 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import ImagesBLL from "../services/images_bll";
 
-const uploadImage = async (req: Request, res: Response) => {
-    await ImagesBLL.uploadImage(req, res)
+const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
+    await ImagesBLL.uploadImage(req, res, next)
 }
 
 const deleteUploadedImage = async (req: Request, res: Response) => {

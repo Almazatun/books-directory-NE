@@ -1,14 +1,15 @@
-import {Response, Request} from "express";
+import {Response, Request, NextFunction} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
 import ImagesDAL from "../dataAccessLayer/images_dal";
+import {ObjectId} from "mongoose";
 
 const uploadPath = path.join('public', coverImageBasePath)
 
 class Images {
 
-    async uploadImage(req: Request, res: Response) {
+    async uploadImage(req: Request, res: Response, next: NextFunction) {
 
         const url = req.protocol + '://' + req.get('host')
 
@@ -18,11 +19,11 @@ class Images {
                 const filePath = `${url}/${uploadPath}/${file.filename}`
 
                 const createdImage = await ImagesDAL.createImage(file.filename, filePath)
-
-                res.status(200).json({
-                    image: createdImage,
-                    message: 'File uploaded successfully 🟢'
-                })
+                console.log("CREATED_FILE", createdImage)
+                req.uploadFile = {
+                    file: createdImage._id
+                }
+                next()
             } else {
                 res.status(400).json({
                     errors: ['No file uploaded'],
@@ -38,7 +39,7 @@ class Images {
     }
 
     //Delete uploaded image file when session expired
-    async deleteUploadedImage(imageId: string,res: Response) {
+    async deleteUploadedImage(imageId: string, res: Response) {
 
         const isUploadedFile = await ImagesDAL.deleteImage(imageId)
 
@@ -68,3 +69,9 @@ class Images {
 
 const ImagesBLL = new Images
 export default ImagesBLL
+
+
+//Types
+export interface IUploadFile {
+   file: ObjectId
+}
