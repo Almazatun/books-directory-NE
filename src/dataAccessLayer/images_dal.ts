@@ -2,6 +2,12 @@ import Image from "../models/image_model";
 
 class Images {
 
+    async getImages() {
+        const images = await Image.find()
+
+        return images
+    }
+
     async createImage(fileName: string, filePath: string) {
 
         const newImage = new Image({

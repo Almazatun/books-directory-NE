@@ -1,8 +1,11 @@
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import ImagesBLL from "../services/images_bll";
 
-const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
-    await ImagesBLL.uploadImage(req, res, next)
+const uploadImage = async (req: Request, res: Response) => {
+
+    console.log('UPLOAD_IMAGE', req.body)
+
+    await ImagesBLL.uploadImage(req, res)
 }
 
 const deleteUploadedImage = async (req: Request, res: Response) => {
@@ -10,7 +13,12 @@ const deleteUploadedImage = async (req: Request, res: Response) => {
     await ImagesBLL.deleteUploadedImage(imageId, res)
 }
 
+const getImages = async (req: Request, res: Response) => {
+    await ImagesBLL.getImages(req, res)
+}
+
 export default {
     uploadImage,
-    deleteUploadedImage
+    deleteUploadedImage,
+    getImages
 }

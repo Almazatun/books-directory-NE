@@ -1,4 +1,4 @@
-import {Response, Request, NextFunction} from "express";
+import {Response, Request} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
@@ -9,7 +9,16 @@ const uploadPath = path.join('public', coverImageBasePath)
 
 class Images {
 
-    async uploadImage(req: Request, res: Response, next: NextFunction) {
+    async getImages (req: Request, res: Response,) {
+
+        const images = await ImagesDAL.getImages()
+
+        res.status(200).json({
+            images: images,
+        })
+    }
+
+    async uploadImage(req: Request, res: Response) {
 
         const url = req.protocol + '://' + req.get('host')
 
@@ -19,11 +28,11 @@ class Images {
                 const filePath = `${url}/${uploadPath}/${file.filename}`
 
                 const createdImage = await ImagesDAL.createImage(file.filename, filePath)
-                console.log("CREATED_FILE", createdImage)
-                req.uploadFile = {
-                    file: createdImage._id
-                }
-                next()
+
+                res.status(200).json({
+                    image: createdImage,
+                    message: 'File uploaded successfully 🟢'
+                })
             } else {
                 res.status(400).json({
                     errors: ['No file uploaded'],
