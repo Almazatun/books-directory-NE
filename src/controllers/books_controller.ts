@@ -1,4 +1,4 @@
-import {query, Request, Response} from "express";
+import {Request, Response} from "express";
 import BooksBLL from "../services/books_bll";
 
 
@@ -15,7 +15,7 @@ const createNewBook = async (req: Request, res: Response) => {
 
     console.log('CREATE_BOOK_BODY', req.body)
 
-    await BooksBLL.createNewBook(req.body, res)
+    await BooksBLL.createNewBook(res, req.body)
 }
 
 //DeleteBook

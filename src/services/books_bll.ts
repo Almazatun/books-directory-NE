@@ -55,7 +55,7 @@ class Books {
         }
     }
 
-    async createNewBook(newBookData: IBookData, res: Response) {
+    async createNewBook(res: Response, newBookData: IBookData) {
         const {title, pageCount, publishDate} = newBookData
 
         const {errors, valid} = validatorCreateNewBook(title, pageCount, publishDate)
