@@ -9,7 +9,7 @@ export interface IBook extends Document {
     authorBook: Schema.Types.ObjectId
     description: string
     pageCount: number
-    publishDate: string
+    publishDate: Date
     createAt: string
     imageBook: Schema.Types.ObjectId
     _doc?: object
@@ -24,7 +24,7 @@ const BookSchema: Schema = new Schema({
         type: String
     },
     publishDate: {
-        type: String,
+        type: Date,
         required: true
     },
     authorBook: {

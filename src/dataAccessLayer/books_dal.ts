@@ -21,7 +21,7 @@ class Books {
         const newBook = new Book({
             title,
             description: description !== undefined && description !== null ? description : '',
-            publishDate,
+            publishDate: new Date(publishDate),
             authorBook,
             pageCount,
             imageBook
@@ -42,24 +42,41 @@ class Books {
 
         const searchBook = new RegExp(title, "i")
 
+        console.log(publishBefore)
+
         let foundBooks: unknown
 
-        if (publishBefore && publishBefore !== '') {
+        if (publishBefore && publishBefore !== '' && publishAfter === '') {
             console.log('PUBLISH_BEFORE')
-            foundBooks = await Book.find({publishDate: publishBefore})
+            foundBooks = await Book.find({
+                publishDate: {
+                    $lte: new Date(publishBefore)
+                }
+            })
                 .populate('authorBook', ['fistName', 'lastName'])
                 .populate('imageBook', ['fileName', 'filePath'])
-        } else if (publishAfter && publishAfter !== '') {
+        } else if (publishAfter && publishAfter !== '' && publishBefore === '') {
             console.log('PUBLISH_AFTER')
-            foundBooks = await Book.find({publishDate: publishAfter})
+            foundBooks = await Book.find({
+                publishDate: {
+                    $gte: new Date(publishAfter)
+                }
+            })
                 .populate('authorBook', ['fistName', 'lastName'])
                 .populate('imageBook', ['fileName', 'filePath'])
         } else if (title && title !== '') {
             foundBooks = await Book.find({title: searchBook})
                 .populate('authorBook', ['fistName', 'lastName'])
                 .populate('imageBook', ['fileName', 'filePath'])
+        } else if (publishBefore !== '' && publishAfter !== '') {
+            console.log('BETWEEN_TWO_DATE')
+            foundBooks = await Book.find({publishDate: {
+                    $lte: new Date(publishBefore),
+                    $gte: new Date(publishAfter)
+                }})
+                .populate('authorBook', ['fistName', 'lastName'])
+                .populate('imageBook', ['fileName', 'filePath'])
         }
-
 
         return foundBooks
     }
