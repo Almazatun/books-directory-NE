@@ -1,4 +1,5 @@
 import Book from "../models/book_model";
+import {searchStatements} from "../utils/searchStatements";
 
 class Books {
     async getAllBooks() {
@@ -42,40 +43,85 @@ class Books {
 
         const searchBook = new RegExp(title, "i")
 
-        console.log(publishBefore)
-
         let foundBooks: unknown
 
-        if (publishBefore && publishBefore !== '' && publishAfter === '') {
-            console.log('PUBLISH_BEFORE')
-            foundBooks = await Book.find({
-                publishDate: {
-                    $lte: new Date(publishBefore)
-                }
-            })
-                .populate('authorBook', ['fistName', 'lastName'])
-                .populate('imageBook', ['fileName', 'filePath'])
-        } else if (publishAfter && publishAfter !== '' && publishBefore === '') {
-            console.log('PUBLISH_AFTER')
-            foundBooks = await Book.find({
-                publishDate: {
-                    $gte: new Date(publishAfter)
-                }
-            })
-                .populate('authorBook', ['fistName', 'lastName'])
-                .populate('imageBook', ['fileName', 'filePath'])
-        } else if (title && title !== '') {
-            foundBooks = await Book.find({title: searchBook})
-                .populate('authorBook', ['fistName', 'lastName'])
-                .populate('imageBook', ['fileName', 'filePath'])
-        } else if (publishBefore !== '' && publishAfter !== '') {
-            console.log('BETWEEN_TWO_DATE')
-            foundBooks = await Book.find({publishDate: {
-                    $lte: new Date(publishBefore),
-                    $gte: new Date(publishAfter)
-                }})
-                .populate('authorBook', ['fistName', 'lastName'])
-                .populate('imageBook', ['fileName', 'filePath'])
+        console.log(title, publishBefore, publishAfter)
+
+        const searchState:SEARCH | null  = searchStatements(title, publishBefore, publishAfter)
+
+        switch(searchState) {
+            case SEARCH.PUBLISH_BEFORE: {
+                console.log(SEARCH.PUBLISH_BEFORE)
+                foundBooks = await Book.find({
+                    publishDate: {
+                        $lte: new Date(publishBefore)
+                    }
+                })
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            }
+            case SEARCH.PUBLISH_AFTER:
+                console.log(SEARCH.PUBLISH_AFTER)
+                foundBooks = await Book.find({
+                    publishDate: {
+                        $gte: new Date(publishAfter)
+                    }
+                })
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            case SEARCH.PUBLISH_AFTER_AND_TITLE:
+                console.log(SEARCH.PUBLISH_AFTER_AND_TITLE)
+                foundBooks = await Book.find({
+                    publishDate: {
+                        $gte: new Date(publishAfter)
+                    },
+                    title: searchBook
+                })
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            case SEARCH.PUBLISH_BEFORE_AND_TITLE:
+                console.log(SEARCH.PUBLISH_BEFORE_AND_TITLE)
+                foundBooks = await Book.find({
+                    publishDate: {
+                        $lte: new Date(publishAfter)
+                    },
+                    title: searchBook
+                })
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            case SEARCH.BY_TITLE:
+                console.log(SEARCH.BY_TITLE)
+                foundBooks = await Book.find({title: searchBook})
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            case SEARCH.FILED_ALL:
+                console.log(SEARCH.FILED_ALL)
+                foundBooks = await Book.find({
+                    publishDate: {
+                        $lte: new Date(publishBefore),
+                        $gte: new Date(publishAfter)
+                    },
+                    title: searchBook
+                })
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            case SEARCH.PUBLISH_BEFORE_AND_PUBLISH_AFTER:
+                console.log(SEARCH.PUBLISH_BEFORE_AND_PUBLISH_AFTER)
+                foundBooks = await Book.find({publishDate: {
+                        $lte: new Date(publishBefore),
+                        $gte: new Date(publishAfter)
+                    }})
+                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('imageBook', ['fileName', 'filePath'])
+                break;
+            default:
+                break;
         }
 
         return foundBooks
@@ -93,4 +139,15 @@ export interface IBookData {
     authorBook: string
     pageCount: number
     imageBook: string
+}
+
+//Enum
+export enum SEARCH {
+    PUBLISH_BEFORE = "PUBLISH_BEFORE",
+    PUBLISH_AFTER = "PUBLISH_AFTER",
+    PUBLISH_BEFORE_AND_TITLE = "PUBLISH_BEFORE_AND_TITLE",
+    PUBLISH_AFTER_AND_TITLE = "PUBLISH_AFTER_AND_TITLE",
+    PUBLISH_BEFORE_AND_PUBLISH_AFTER = "PUBLISH_BEFORE_AND_PUBLISH_AFTER",
+    FILED_ALL = 'FILED_ALL',
+    BY_TITLE = "BY_TITLE"
 }
