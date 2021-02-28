@@ -2,14 +2,14 @@ import mongoose, {Schema, Document} from 'mongoose'
 
 export interface IAuthor extends Document {
     _id: Schema.Types.ObjectId
-    fistName: string
+    firstName: string
     lastName: string
     createdAt: string
     _doc?: object
 }
 
 const AuthorSchema: Schema = new Schema({
-    fistName: {
+    firstName: {
        type: String,
        required: true
    },

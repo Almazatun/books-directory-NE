@@ -3,7 +3,7 @@ import Author from "../models/author_model";
 class Authors {
     async saveNewUserDB(firstName: string, lastName: string) {
         const newAuthor = new Author({
-            fistName: firstName,
+            firstName: firstName,
             lastName: lastName,
         })
 
@@ -28,7 +28,7 @@ class Authors {
         //Use Regular expression to find particular author or authors
         const searchAuthor = new RegExp(firstName, "i")
 
-        const foundAuthors = await Author.find({fistName: searchAuthor})
+        const foundAuthors = await Author.find({firstName: searchAuthor})
 
         return foundAuthors
     }
