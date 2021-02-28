@@ -5,7 +5,7 @@ import AuthorsBLL from "../services/authors_bll";
 //Get all authors or particular author
 //Included searching option
 const getAllAuthors =  async (req: Request, res: Response) => {
-    const {firstName} = req.body
+    const {firstName}: { [key: string]: unknown } = req.query
    await AuthorsBLL.getAuthors(firstName, res)
 }
 

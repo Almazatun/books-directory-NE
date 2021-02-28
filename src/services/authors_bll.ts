@@ -62,7 +62,7 @@ class Authors {
         }
     }
 
-    async getAuthors (firstName: string, res: Response ) {
+    async getAuthors (firstName: string | any, res: Response ) {
         if (firstName !== null && firstName !== '') {
             const authors = await AuthorsDAL.searchAuthorsByFistName(firstName)
             res.json(authors)
