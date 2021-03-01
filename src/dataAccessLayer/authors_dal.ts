@@ -1,21 +1,21 @@
 import Author from "../models/author_model";
 
 class Authors {
-    async saveNewUserDB(firstName: string, lastName: string) {
+    async saveNewAuthorDB(firstName: string, lastName: string) {
         const newAuthor = new Author({
             firstName: firstName,
             lastName: lastName,
         })
 
-        const savedUser = await newAuthor.save()
+        const savedAuthor = await newAuthor.save()
 
-        return savedUser
+        return savedAuthor
     }
 
-    async deleteUserDB(authorId: string) {
-        const deleteUser = await Author.findByIdAndDelete({_id: authorId})
+    async deleteAuthorDB(authorId: string) {
+        const deleteAuthor = await Author.findByIdAndDelete({_id: authorId})
 
-        return deleteUser
+        return deleteAuthor
     }
     //In the method included searching option
     async getAllAuthors () {
