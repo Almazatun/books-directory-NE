@@ -1,7 +1,7 @@
 import express from "express";
 import controller from '../controllers/images_controller'
 import {upload} from "../utils/multerStorage";
-import {IMAGES_ROUTE_URL_DELETE, IMAGES_ROUTE_URL_GET} from "../config/privateRoutes";
+import {IMAGES_ROUTE_URL_DELETE, IMAGES_ROUTE_URL_GET} from "../configs/privateRoutes";
 
 const router = express.Router();
 
