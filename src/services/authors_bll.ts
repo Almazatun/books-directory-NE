@@ -19,10 +19,10 @@ class Authors {
                     })
                 } else  {
                     console.log('AUTHOR_SAVED')
-                    const savedUser = await AuthorsDAL.saveNewUserDB(firstName, lastName)
+                    const savedAuthor = await AuthorsDAL.saveNewAuthorDB(firstName, lastName)
 
                     res.status(200).json({
-                        author: savedUser,
+                        author: savedAuthor,
                         message: '➕ Author created successfully',
                     })
                 }
@@ -41,7 +41,7 @@ class Authors {
     }
 
     async deleteAuthor (userId: string, res: Response) {
-        const deletedAuthor = await AuthorsDAL.deleteUserDB(userId)
+        const deletedAuthor = await AuthorsDAL.deleteAuthorDB(userId)
         try {
             if (deletedAuthor) {
                 res.json({
