@@ -24,21 +24,29 @@ const authMeUser = async (req: Request, res: Response) => {
 }
 
 //Update userName
-const updateUserName = async () => {
+const updateUserName = async (req: Request, res: Response) => {
+    const {title}: {title: string} = req.body
 
+    await UsersBLL.updateUserName(req.params.id, title, res)
 }
 
 const addBookUserCollection = async (req: Request, res: Response) => {
 
-    console.log("ADD_BOOK_USER_COLLECTION" ,req.params.id)
+    const {bookId}: {bookId: string} = req.body
 
-    const {bookId} = req.body
-    await UsersBLL.addBookUserCollection(req.params.id, bookId, res)
+    await UsersBLL.addBookUserBooksCollection(req.params.id, bookId, res)
 }
 
-const deleteBookUserCollection = async () => {
+const deleteBookUserCollection = async (req: Request, res: Response) => {
 
+    const {bookId}: {bookId: string} = req.body
+
+    await UsersBLL.deleteBookUserBooksCollection(req.params.id, bookId, res)
 }
+
+// const getUsers = async (req: Request, res: Response) => {
+//     await UsersBLL.getUsers(res)
+// }
 
 
 export default {
@@ -48,5 +56,7 @@ export default {
     authMeUser,
     updateUserName,
     addBookUserCollection,
-    deleteBookUserCollection
+    deleteBookUserCollection,
+    //
+    //getUsers
 }
