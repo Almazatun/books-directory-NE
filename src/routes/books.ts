@@ -1,5 +1,6 @@
 import express from "express";
 import controller from '../controllers/books_controller'
+import {authMe} from "../hellpers/authMe";
 
 const router = express.Router();
 
@@ -7,9 +8,9 @@ const router = express.Router();
 router.get("/", controller.getAllBooks)
 
 //Create new book
-router.post("/new", controller.createNewBook)
+router.post("/new", authMe, controller.createNewBook)
 
 //Delete book
-router.delete("/delete/:id", controller.deleteBook)
+router.delete("/delete/:id", authMe, controller.deleteBook)
 
 export default router;
