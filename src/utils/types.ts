@@ -6,4 +6,8 @@ export default interface Errors {
     //
     firstName?: string
     lastName?: string
+    //
+    email?: string
+    userName?: string
+    password?: string
 }
