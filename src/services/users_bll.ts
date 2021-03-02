@@ -18,9 +18,8 @@ class Users {
 
                 // Make sure the user does not already exist
                 const foundUserByEmail = await UsersDAL.findOneUserByEmail(email)
-                const foundUserByUserName = await UsersDAL.findOneUserByUserName(userName)
 
-                if (foundUserByEmail || foundUserByUserName) {
+                if (foundUserByEmail) {
                     res.status(400).json({
                         errors: ['This is user already exist 🧒 | 👩️'],
                     })
@@ -101,6 +100,7 @@ class Users {
     }
 
     async logOut(req: Request, res: Response) {
+
         try {
             req.session.destroy((err) => {
 
@@ -138,15 +138,19 @@ class Users {
 
     async addBookUserBooksCollection (userId: string, bookId: string, res: Response) {
 
-        console.log(userId, bookId)
 
         //Make sure the book exist in the database
-        const isBook = await BooksDAL.findBookById(bookId)
+        const isBook = await BooksDAL.findBookById(bookId).catch(() => {
+            res.status(400).json({
+                errors: ['Book Id not valid'],
+                message: 'Bad request 🔴',
+            })
+        })
 
         try {
             if (!isBook) {
                 res.status(400).json({
-                    errors: ['Book Id not exist'],
+                    errors: ['Book Id not valid'],
                     message: 'Bad request 🔴',
                 })
             } else {
@@ -166,12 +170,38 @@ class Users {
 
     async deleteBookUserBooksCollection (userId: string, bookId: string, res: Response) {
 
-        try {
-            const booksCollection = await UsersDAL.deleteBookUserCollection(userId, bookId)
-            res.status(200).json({
-                books: booksCollection,
-                message: 'Book has been deleted successfully ❌',
+        //Make sure the book exist in the User book collection
+        const isBookInUserCollection: Array<string> | any = await UsersDAL.findBookUserCollection(userId, bookId).catch((error) => {
+            res.status(400).json({
+                errors: [error],
+                message: 'Book Id not valid',
             })
+        })
+
+        const isBook = await BooksDAL.findBookById(isBookInUserCollection[0])
+            .catch((error) => {
+                res.status(400).json({
+                    errors: [error],
+                    message: 'Book Id not valid',
+                })
+            })
+
+
+        try {
+            if (isBookInUserCollection.length === 0) {
+                res.status(400).json({
+                    errors: ['Book Id not valid'],
+                    message: 'Bad request 🔴',
+                })
+            } else {
+               const booksCollection = await UsersDAL.deleteBookUserCollection(userId, bookId)
+
+                res.status(200).json({
+                    books: isBook,
+                    message: 'Book has been deleted successfully ❌',
+                })
+            }
+
         } catch (error) {
             res.status(500).json({
                 errors: [error],
@@ -192,6 +222,34 @@ class Users {
                error: [error]
            })
        }
+    }
+
+    async updateUserName (userId: string, title: string, res: Response) {
+
+        //Make sure the user exist
+        const foundUserById = await UsersDAL.findOneUserById(userId)
+
+        try {
+
+            if (!foundUserById) {
+                res.status(400).json({
+                    errors: ['User Id not valid'],
+                    message: 'Bad request 🔴',
+                })
+            } else {
+                const updatedUserData = await UsersDAL.updateUserData(userId, title)
+
+                res.status(200).json({
+                    user: updatedUserData,
+                    message: 'User name has been updated successfully',
+                })
+            }
+
+        } catch (error) {
+            res.status(500).json({
+                error: [error]
+            })
+        }
     }
     
 }
