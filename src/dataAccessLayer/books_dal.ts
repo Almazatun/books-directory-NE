@@ -126,6 +126,14 @@ class Books {
 
         return foundBooks
     }
+
+    async findBookById (bookId: string) {
+        const foundBook = await Book.findById({_id: bookId})
+            .populate('authorBook', ['fistName', 'lastName'])
+            .populate('imageBook', ['fileName', 'filePath'])
+
+        return foundBook
+    }
 }
 
 const BooksDAL = new Books()
