@@ -4,7 +4,7 @@ import mongoose, {Schema, Document} from 'mongoose'
 export interface IUser extends Document{
     _id?: Schema.Types.ObjectId
     userName: string
-    userBooks: Array<string>
+    userBooks: Array<object>
     email: string
     password: string
     createdAt: string
@@ -17,11 +17,11 @@ const UserSchema: Schema = new Schema({
         type: String,
         required: true
     },
-    userBooks: {
-        type: [Schema.Types.ObjectId],
+    userBooks: [{
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'Book'
-    },
+    }],
     email: {
         type: String,
         required: true
