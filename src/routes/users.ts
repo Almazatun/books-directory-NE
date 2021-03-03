@@ -21,10 +21,10 @@ router.post("/authchecker", controller.authMeUser)
 //Add book user books collection
 router.put("/user/:id/addbook", controller.addBookUserCollection)
 
-//Add book user books collection
-router.delete("/user/:id/deletebook", controller.deleteBookUserCollection)
+//Delete book user books collection
+router.delete("/user/:id/deletebook/:bookId", controller.deleteBookUserCollection)
 
-//Add book user books collection
+//Update userName
 router.put("/user/:id/update", controller.updateUserName)
 
 

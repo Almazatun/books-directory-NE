@@ -39,9 +39,7 @@ const addBookUserCollection = async (req: Request, res: Response) => {
 
 const deleteBookUserCollection = async (req: Request, res: Response) => {
 
-    const {bookId}: {bookId: string} = req.body
-
-    await UsersBLL.deleteBookUserBooksCollection(req.params.id, bookId, res)
+    await UsersBLL.deleteBookUserBooksCollection(req.params.id, req.params.bookId, res)
 }
 
 // const getUsers = async (req: Request, res: Response) => {
