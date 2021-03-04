@@ -29,9 +29,9 @@ POST /users/register
 POST /users/login
 DELETE /users/logout
 POST /users/authchecker
-POST /users/user/<typecode>/addbook
-POST /users/user/<typecode>/update"
-DELETE /users/user/<typecode>/deletebook
+PUT /users/user/<typecode>/addbook
+PUT /users/user/<typecode>/update"
+DELETE /users/user/<typecode>/deletebook/<typecode>
 ```
 ### Filter
 Use ``.`` to access deep properties
