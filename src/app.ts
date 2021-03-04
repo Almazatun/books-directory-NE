@@ -71,6 +71,8 @@ app.use(
   cors({
     credentials: CORS_WITH_CREDENTIALS,
     origin: CORS_ALLOW_HOST,
+      methods: "GET, PUT, POST, DELETE",
+      optionsSuccessStatus: 200
   })
 );
 
