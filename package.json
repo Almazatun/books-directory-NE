@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Almazatun/books-directory.git"
+    "url": "git+https://github.com/Almazatun/books-directory-NE.git"
   },
   "author": "Almaz P",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Almazatun/books-directory/issues"
+    "url": "https://github.com/Almazatun/books-directory-NE/issues"
   },
   "homepage": "https://github.com/Almazatun/books-directory#readme",
   "dependencies": {
