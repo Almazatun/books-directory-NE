@@ -47,7 +47,35 @@ GET /books?title=Clean Code&publishBefore=<typecode>&publishAfter=<typecode>
 * Logout
 * Create and Add book
 * Create and Add new author
+* Delete book
+* Delete author
+* Update user data
+* Add a book user collection
+* Delete a book user collection 
 
-## 🧲 Relationship Schema collections
+## 🧲 Relationship between collections
 ![relationship](src/assets/Relationship.PNG)
+
+## Installation
+1. Clone project
+```
+git clone https://github.com/Almazatun/books-directory-NE.git
+```
+2. Download dependencies
+```
+npm install / yarn install
+```
+3. Start dev server
+```
+npm run dev / yarn run dev
+```
+4. Build project 
+```
+npm run build 
+```
+5. Start server
+```
+npm start
+```
+
 
