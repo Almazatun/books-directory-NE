@@ -1,5 +1,6 @@
 import express from "express";
 import controller from '../controllers/users_controller'
+import {authMe} from "../hellpers/authMe";
 
 const router = express.Router();
 
@@ -19,13 +20,13 @@ router.delete("/logout", controller.logOutUser)
 router.post("/authchecker", controller.authMeUser)
 
 //Add book user books collection
-router.put("/user/:id/addbook", controller.addBookUserCollection)
+router.put("/user/:id/addbook", authMe, controller.addBookUserCollection)
 
 //Delete book user books collection
-router.delete("/user/:id/deletebook/:bookId", controller.deleteBookUserCollection)
+router.delete("/user/:id/deletebook/:bookId", authMe, controller.deleteBookUserCollection)
 
 //Update userName
-router.put("/user/:id/update", controller.updateUserName)
+router.put("/user/:id/update", authMe, controller.updateUserName)
 
 
 export default router;
