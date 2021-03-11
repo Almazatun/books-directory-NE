@@ -39,85 +39,56 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var author_model_1 = __importDefault(require("../models/author_model"));
-var Authors = /** @class */ (function () {
-    function Authors() {
+exports.ImagesDataAccessLayer = void 0;
+var image_model_1 = __importDefault(require("../models/image_model"));
+var ImagesDataAccessLayer = /** @class */ (function () {
+    function ImagesDataAccessLayer() {
     }
-    Authors.prototype.saveNewAuthorDB = function (firstName, lastName) {
+    ImagesDataAccessLayer.prototype.getImages = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var newAuthor, savedAuthor;
+            var images;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, image_model_1.default.find()];
+                    case 1:
+                        images = _a.sent();
+                        return [2 /*return*/, images];
+                }
+            });
+        });
+    };
+    ImagesDataAccessLayer.prototype.createImage = function (fileName, filePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            var newImage, savedImage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newAuthor = new author_model_1.default({
-                            firstName: firstName,
-                            lastName: lastName,
+                        newImage = new image_model_1.default({
+                            fileName: fileName,
+                            filePath: filePath
                         });
-                        return [4 /*yield*/, newAuthor.save()];
+                        return [4 /*yield*/, newImage.save()];
                     case 1:
-                        savedAuthor = _a.sent();
-                        return [2 /*return*/, savedAuthor];
+                        savedImage = _a.sent();
+                        return [2 /*return*/, savedImage];
                 }
             });
         });
     };
-    Authors.prototype.deleteAuthorDB = function (authorId) {
+    ImagesDataAccessLayer.prototype.deleteImage = function (imageId) {
         return __awaiter(this, void 0, void 0, function () {
-            var deleteAuthor;
+            var deletedImage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, author_model_1.default.findByIdAndDelete({ _id: authorId })];
+                    case 0: return [4 /*yield*/, image_model_1.default.findByIdAndDelete({ _id: imageId })];
                     case 1:
-                        deleteAuthor = _a.sent();
-                        return [2 /*return*/, deleteAuthor];
+                        deletedImage = _a.sent();
+                        return [2 /*return*/, deletedImage];
                 }
             });
         });
     };
-    //In the method included searching option
-    Authors.prototype.getAllAuthors = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var authors;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, author_model_1.default.find()];
-                    case 1:
-                        authors = _a.sent();
-                        return [2 /*return*/, authors];
-                }
-            });
-        });
-    };
-    Authors.prototype.searchAuthorsByFistName = function (firstName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var searchAuthor, foundAuthors;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        searchAuthor = new RegExp(firstName, "i");
-                        return [4 /*yield*/, author_model_1.default.find({ firstName: searchAuthor })];
-                    case 1:
-                        foundAuthors = _a.sent();
-                        return [2 /*return*/, foundAuthors];
-                }
-            });
-        });
-    };
-    Authors.prototype.findOneAuthorByLastName = function (lastName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var foundAuthor;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, author_model_1.default.findOne({ lastName: lastName }).exec()];
-                    case 1:
-                        foundAuthor = _a.sent();
-                        return [2 /*return*/, foundAuthor];
-                }
-            });
-        });
-    };
-    return Authors;
+    return ImagesDataAccessLayer;
 }());
-var AuthorsDAL = new Authors;
-exports.default = AuthorsDAL;
-//# sourceMappingURL=authors_dal.js.map
+exports.ImagesDataAccessLayer = ImagesDataAccessLayer;
+//# sourceMappingURL=images_dal.js.map

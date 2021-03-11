@@ -39,13 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SEARCH = void 0;
+exports.SEARCH = exports.BooksDataAccessLayer = void 0;
 var book_model_1 = __importDefault(require("../models/book_model"));
 var searchStatements_1 = require("../utils/searchStatements");
-var Books = /** @class */ (function () {
-    function Books() {
+var BooksDataAccessLayer = /** @class */ (function () {
+    function BooksDataAccessLayer() {
     }
-    Books.prototype.getAllBooks = function () {
+    BooksDataAccessLayer.prototype.getAllBooks = function () {
         return __awaiter(this, void 0, void 0, function () {
             var books;
             return __generator(this, function (_a) {
@@ -60,7 +60,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.findExistBook = function (titleBook) {
+    BooksDataAccessLayer.prototype.findExistBook = function (titleBook) {
         return __awaiter(this, void 0, void 0, function () {
             var foundBook;
             return __generator(this, function (_a) {
@@ -73,7 +73,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.createNewBook = function (newBookData) {
+    BooksDataAccessLayer.prototype.createNewBook = function (newBookData) {
         return __awaiter(this, void 0, void 0, function () {
             var title, pageCount, publishDate, authorBook, description, imageBook, newBook, savedBook;
             return __generator(this, function (_a) {
@@ -96,7 +96,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.deleteBook = function (bookId) {
+    BooksDataAccessLayer.prototype.deleteBook = function (bookId) {
         return __awaiter(this, void 0, void 0, function () {
             var deletedBook;
             return __generator(this, function (_a) {
@@ -109,7 +109,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.searchBooks = function (title, publishBefore, publishAfter) {
+    BooksDataAccessLayer.prototype.searchBooks = function (title, publishBefore, publishAfter) {
         return __awaiter(this, void 0, void 0, function () {
             var searchBook, foundBooks, searchState, _a;
             return __generator(this, function (_b) {
@@ -218,7 +218,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.findBookById = function (bookId) {
+    BooksDataAccessLayer.prototype.findBookById = function (bookId) {
         return __awaiter(this, void 0, void 0, function () {
             var foundBook;
             return __generator(this, function (_a) {
@@ -233,10 +233,9 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    return Books;
+    return BooksDataAccessLayer;
 }());
-var BooksDAL = new Books();
-exports.default = BooksDAL;
+exports.BooksDataAccessLayer = BooksDataAccessLayer;
 //Enum
 var SEARCH;
 (function (SEARCH) {

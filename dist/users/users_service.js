@@ -10,6 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,15 +59,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UsersService = void 0;
 var validators_1 = __importDefault(require("../utils/validators"));
-var users_dal_1 = __importDefault(require("../dataAccessLayer/users.dal"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
-var books_dal_1 = __importDefault(require("../dataAccessLayer/books_dal"));
+var tsyringe_1 = require("tsyringe");
+var users_dal_1 = require("./users.dal");
+var books_dal_1 = require("../books/books_dal");
 var validatorNewUserData = validators_1.default.validatorNewUserData, validatorLogIn = validators_1.default.validatorLogIn;
-var Users = /** @class */ (function () {
-    function Users() {
+var UsersService = /** @class */ (function () {
+    function UsersService(usersDataAccessLayer, booksDataAccessLayer) {
+        this.usersDataAccessLayer = usersDataAccessLayer;
+        this.booksDataAccessLayer = booksDataAccessLayer;
     }
-    Users.prototype.createNewUser = function (email, userName, password, res) {
+    UsersService.prototype.createNewUser = function (email, userName, password, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, valid, errors, foundUserByEmail, newUserData, createdUser, error_1;
             return __generator(this, function (_b) {
@@ -70,7 +83,7 @@ var Users = /** @class */ (function () {
                     case 1:
                         _b.trys.push([1, 8, , 9]);
                         if (!valid) return [3 /*break*/, 6];
-                        return [4 /*yield*/, users_dal_1.default.findOneUserByEmail(email)];
+                        return [4 /*yield*/, this.usersDataAccessLayer.findOneUserByEmail(email)];
                     case 2:
                         foundUserByEmail = _b.sent();
                         if (!foundUserByEmail) return [3 /*break*/, 3];
@@ -85,7 +98,7 @@ var Users = /** @class */ (function () {
                             userName: userName,
                             password: password
                         };
-                        return [4 /*yield*/, users_dal_1.default.createNewUser(newUserData)];
+                        return [4 /*yield*/, this.usersDataAccessLayer.createNewUser(newUserData)];
                     case 4:
                         createdUser = _b.sent();
                         res.status(200).json({
@@ -112,14 +125,14 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.logIn = function (email, password, req, res) {
+    UsersService.prototype.logIn = function (email, password, req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, errors, valid, user, isMatch, sessUser, error_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _a = validatorLogIn(email, password), errors = _a.errors, valid = _a.valid;
-                        return [4 /*yield*/, users_dal_1.default.findOneUserByEmail(email)];
+                        return [4 /*yield*/, this.usersDataAccessLayer.findOneUserByEmail(email)];
                     case 1:
                         user = _b.sent();
                         _b.label = 2;
@@ -170,7 +183,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.logOut = function (req, res) {
+    UsersService.prototype.logOut = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 try {
@@ -194,7 +207,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.autoChecker = function (req, res) {
+    UsersService.prototype.autoChecker = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var sessUser;
             return __generator(this, function (_a) {
@@ -217,12 +230,12 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.addBookUserBooksCollection = function (userId, bookId, res) {
+    UsersService.prototype.addBookUserBooksCollection = function (userId, bookId, res) {
         return __awaiter(this, void 0, void 0, function () {
             var isBook, booksCollection, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, books_dal_1.default.findBookById(bookId).catch(function () {
+                    case 0: return [4 /*yield*/, this.booksDataAccessLayer.findBookById(bookId).catch(function () {
                             res.status(400).json({
                                 errors: ['Book Id not valid'],
                                 message: 'Bad request 🔴',
@@ -239,7 +252,7 @@ var Users = /** @class */ (function () {
                             message: 'Bad request 🔴',
                         });
                         return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, users_dal_1.default.addBookUserCollection(userId, bookId)];
+                    case 3: return [4 /*yield*/, this.usersDataAccessLayer.addBookUserCollection(userId, bookId)];
                     case 4:
                         booksCollection = _a.sent();
                         res.status(200).json({
@@ -260,12 +273,12 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.deleteBookUserBooksCollection = function (userId, bookId, res) {
+    UsersService.prototype.deleteBookUserBooksCollection = function (userId, bookId, res) {
         return __awaiter(this, void 0, void 0, function () {
             var isBookInUserCollection, isBook, booksCollection, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, users_dal_1.default.findBookUserCollection(userId, bookId).catch(function (error) {
+                    case 0: return [4 /*yield*/, this.usersDataAccessLayer.findBookUserCollection(userId, bookId).catch(function (error) {
                             res.status(400).json({
                                 errors: [error],
                                 message: 'Book Id not valid',
@@ -273,7 +286,7 @@ var Users = /** @class */ (function () {
                         })];
                     case 1:
                         isBookInUserCollection = _a.sent();
-                        return [4 /*yield*/, books_dal_1.default.findBookById(isBookInUserCollection[0])
+                        return [4 /*yield*/, this.booksDataAccessLayer.findBookById(isBookInUserCollection[0])
                                 .catch(function (error) {
                                 res.status(400).json({
                                     errors: [error],
@@ -291,7 +304,7 @@ var Users = /** @class */ (function () {
                             message: 'Bad request 🔴',
                         });
                         return [3 /*break*/, 6];
-                    case 4: return [4 /*yield*/, users_dal_1.default.deleteBookUserCollection(userId, bookId)];
+                    case 4: return [4 /*yield*/, this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)];
                     case 5:
                         booksCollection = _a.sent();
                         res.status(200).json({
@@ -312,14 +325,14 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.getUsers = function (res) {
+    UsersService.prototype.getUsers = function (res) {
         return __awaiter(this, void 0, void 0, function () {
             var users, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, users_dal_1.default.getAllUsers()];
+                        return [4 /*yield*/, this.usersDataAccessLayer.getAllUsers()];
                     case 1:
                         users = _a.sent();
                         res.status(200).json({
@@ -337,12 +350,12 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.updateUserName = function (userId, title, res) {
+    UsersService.prototype.updateUserName = function (userId, title, res) {
         return __awaiter(this, void 0, void 0, function () {
             var foundUserById, updatedUserData, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, users_dal_1.default.findOneUserById(userId)];
+                    case 0: return [4 /*yield*/, this.usersDataAccessLayer.findOneUserById(userId)];
                     case 1:
                         foundUserById = _a.sent();
                         _a.label = 2;
@@ -354,7 +367,7 @@ var Users = /** @class */ (function () {
                             message: 'Bad request 🔴',
                         });
                         return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, users_dal_1.default.updateUserData(userId, title)];
+                    case 3: return [4 /*yield*/, this.usersDataAccessLayer.updateUserData(userId, title)];
                     case 4:
                         updatedUserData = _a.sent();
                         res.status(200).json({
@@ -374,8 +387,11 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    return Users;
+    UsersService = __decorate([
+        tsyringe_1.injectable(),
+        __metadata("design:paramtypes", [users_dal_1.UsersDataAccessLayer, books_dal_1.BooksDataAccessLayer])
+    ], UsersService);
+    return UsersService;
 }());
-var UsersBLL = new Users;
-exports.default = UsersBLL;
-//# sourceMappingURL=users_bll.js.map
+exports.UsersService = UsersService;
+//# sourceMappingURL=users_service.js.map

@@ -10,6 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,13 +59,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthorsService = void 0;
 var validators_1 = __importDefault(require("../utils/validators"));
-var authors_dal_1 = __importDefault(require("../dataAccessLayer/authors_dal"));
+var authors_dal_1 = require("./authors_dal");
+var tsyringe_1 = require("tsyringe");
 var validatorCreateNewAuthor = validators_1.default.validatorCreateNewAuthor;
-var Authors = /** @class */ (function () {
-    function Authors() {
+var AuthorsService = /** @class */ (function () {
+    function AuthorsService(authorsDataAccessLayer) {
+        this.authorsDataAccessLayer = authorsDataAccessLayer;
     }
-    Authors.prototype.createNewAuthor = function (firstName, lastName, res) {
+    AuthorsService.prototype.createNewAuthor = function (firstName, lastName, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, valid, errors, foundAuthorByLastName, savedAuthor, error_1;
             return __generator(this, function (_b) {
@@ -67,7 +79,7 @@ var Authors = /** @class */ (function () {
                     case 1:
                         _b.trys.push([1, 8, , 9]);
                         if (!valid) return [3 /*break*/, 6];
-                        return [4 /*yield*/, authors_dal_1.default.findOneAuthorByLastName(lastName)];
+                        return [4 /*yield*/, this.authorsDataAccessLayer.findOneAuthorByLastName(lastName)];
                     case 2:
                         foundAuthorByLastName = _b.sent();
                         if (!foundAuthorByLastName) return [3 /*break*/, 3];
@@ -77,7 +89,7 @@ var Authors = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 3:
                         console.log('AUTHOR_SAVED');
-                        return [4 /*yield*/, authors_dal_1.default.saveNewAuthorDB(firstName, lastName)];
+                        return [4 /*yield*/, this.authorsDataAccessLayer.saveNewAuthorDB(firstName, lastName)];
                     case 4:
                         savedAuthor = _b.sent();
                         res.status(200).json({
@@ -105,12 +117,12 @@ var Authors = /** @class */ (function () {
             });
         });
     };
-    Authors.prototype.deleteAuthor = function (userId, res) {
+    AuthorsService.prototype.deleteAuthor = function (userId, res) {
         return __awaiter(this, void 0, void 0, function () {
             var deletedAuthor;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, authors_dal_1.default.deleteAuthorDB(userId)];
+                    case 0: return [4 /*yield*/, this.authorsDataAccessLayer.deleteAuthorDB(userId)];
                     case 1:
                         deletedAuthor = _a.sent();
                         try {
@@ -122,7 +134,7 @@ var Authors = /** @class */ (function () {
                             }
                             else {
                                 res.status(400).json({
-                                    errors: ['Book Id not exist'],
+                                    errors: ['Author Id not valid'],
                                     message: 'Bad request 🤬'
                                 });
                             }
@@ -138,19 +150,18 @@ var Authors = /** @class */ (function () {
             });
         });
     };
-    Authors.prototype.getAuthors = function (firstName, res) {
+    AuthorsService.prototype.getAuthors = function (firstName, res) {
         return __awaiter(this, void 0, void 0, function () {
             var authors, authors;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!(firstName !== null && firstName !== '')) return [3 /*break*/, 2];
-                        return [4 /*yield*/, authors_dal_1.default.searchAuthorsByFistName(firstName)];
+                        return [4 /*yield*/, this.authorsDataAccessLayer.searchAuthorsByFistName(firstName)];
                     case 1:
                         authors = _a.sent();
-                        res.json(authors);
-                        return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, authors_dal_1.default.getAllAuthors()];
+                        return [2 /*return*/, res.json(authors)];
+                    case 2: return [4 /*yield*/, this.authorsDataAccessLayer.getAllAuthors()];
                     case 3:
                         authors = _a.sent();
                         res.json(authors);
@@ -160,8 +171,11 @@ var Authors = /** @class */ (function () {
             });
         });
     };
-    return Authors;
+    AuthorsService = __decorate([
+        tsyringe_1.injectable(),
+        __metadata("design:paramtypes", [authors_dal_1.AuthorsDataAccessLayer])
+    ], AuthorsService);
+    return AuthorsService;
 }());
-var AuthorsBLL = new Authors;
-exports.default = AuthorsBLL;
-//# sourceMappingURL=authors_bll.js.map
+exports.AuthorsService = AuthorsService;
+//# sourceMappingURL=authors_service.js.map

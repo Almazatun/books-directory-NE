@@ -39,12 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UsersDataAccessLayer = void 0;
 var user_model_1 = __importDefault(require("../models/user_model"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
-var Users = /** @class */ (function () {
-    function Users() {
+var UsersDataAccessLayer = /** @class */ (function () {
+    function UsersDataAccessLayer() {
     }
-    Users.prototype.createNewUser = function (newUserData) {
+    UsersDataAccessLayer.prototype.createNewUser = function (newUserData) {
         return __awaiter(this, void 0, void 0, function () {
             var email, password, userName, hashedPassword, newUser, createdUser;
             return __generator(this, function (_a) {
@@ -68,7 +69,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.updateUserData = function (userId, title) {
+    UsersDataAccessLayer.prototype.updateUserData = function (userId, title) {
         return __awaiter(this, void 0, void 0, function () {
             var updatedUserData;
             return __generator(this, function (_a) {
@@ -93,7 +94,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.addBookUserCollection = function (userId, bookId) {
+    UsersDataAccessLayer.prototype.addBookUserCollection = function (userId, bookId) {
         return __awaiter(this, void 0, void 0, function () {
             var updatedUserData;
             return __generator(this, function (_a) {
@@ -126,7 +127,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.deleteBookUserCollection = function (userId, bookId) {
+    UsersDataAccessLayer.prototype.deleteBookUserCollection = function (userId, bookId) {
         return __awaiter(this, void 0, void 0, function () {
             var updatedUserData;
             return __generator(this, function (_a) {
@@ -157,7 +158,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.findOneUserByEmail = function (email) {
+    UsersDataAccessLayer.prototype.findOneUserByEmail = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var foundUser;
             return __generator(this, function (_a) {
@@ -170,7 +171,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.findBookUserCollection = function (userId, bookId) {
+    UsersDataAccessLayer.prototype.findBookUserCollection = function (userId, bookId) {
         return __awaiter(this, void 0, void 0, function () {
             var foundBookUserCollection, foundBookId;
             return __generator(this, function (_a) {
@@ -186,7 +187,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.findOneUserById = function (userId) {
+    UsersDataAccessLayer.prototype.findOneUserById = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
             var foundUser;
             return __generator(this, function (_a) {
@@ -199,7 +200,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    Users.prototype.getAllUsers = function () {
+    UsersDataAccessLayer.prototype.getAllUsers = function () {
         return __awaiter(this, void 0, void 0, function () {
             var users;
             return __generator(this, function (_a) {
@@ -224,8 +225,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    return Users;
+    return UsersDataAccessLayer;
 }());
-var UsersDAL = new Users();
-exports.default = UsersDAL;
+exports.UsersDataAccessLayer = UsersDataAccessLayer;
 //# sourceMappingURL=users.dal.js.map

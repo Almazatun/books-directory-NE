@@ -10,6 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,18 +59,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BooksService = void 0;
 var validators_1 = __importDefault(require("../utils/validators"));
-var books_dal_1 = __importDefault(require("../dataAccessLayer/books_dal"));
+var books_dal_1 = require("./books_dal");
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var book_model_1 = require("../models/book_model");
-var images_dal_1 = __importDefault(require("../dataAccessLayer/images_dal"));
+var tsyringe_1 = require("tsyringe");
+var images_dal_1 = require("../images/images_dal");
 var validatorCreateNewBook = validators_1.default.validatorCreateNewBook;
 var uploadPath = path_1.default.join('public', book_model_1.coverImageBasePath);
-var Books = /** @class */ (function () {
-    function Books() {
+var BooksService = /** @class */ (function () {
+    function BooksService(booksDataAccessLayer, imagesDataAccessLayer) {
+        this.booksDataAccessLayer = booksDataAccessLayer;
+        this.imagesDataAccessLayer = imagesDataAccessLayer;
     }
-    Books.prototype.getAllBooks = function (title, publishBefore, publishAfter, res) {
+    BooksService.prototype.getAllBooks = function (title, publishBefore, publishAfter, res) {
         return __awaiter(this, void 0, void 0, function () {
             var books, searchTitle, searchPublishBefore, searchPublishAfter, error_1;
             return __generator(this, function (_a) {
@@ -75,7 +88,7 @@ var Books = /** @class */ (function () {
                         _a.trys.push([1, 10, , 11]);
                         if (!(title !== null && title !== "" && title !== undefined)) return [3 /*break*/, 3];
                         console.log('SEARCH_OPTIONS');
-                        return [4 /*yield*/, books_dal_1.default.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
+                        return [4 /*yield*/, this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
                     case 2:
                         //Search option
                         books = _a.sent();
@@ -86,7 +99,7 @@ var Books = /** @class */ (function () {
                         return [3 /*break*/, 9];
                     case 3:
                         if (!(publishBefore !== null && publishBefore !== "" && publishBefore !== undefined)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, books_dal_1.default.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
+                        return [4 /*yield*/, this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
                     case 4:
                         books = _a.sent();
                         res.status(200).json({
@@ -96,7 +109,7 @@ var Books = /** @class */ (function () {
                         return [3 /*break*/, 9];
                     case 5:
                         if (!(publishAfter !== null && publishAfter !== "" && publishAfter !== undefined)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, books_dal_1.default.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
+                        return [4 /*yield*/, this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)];
                     case 6:
                         books = _a.sent();
                         res.status(200).json({
@@ -106,7 +119,7 @@ var Books = /** @class */ (function () {
                         return [3 /*break*/, 9];
                     case 7:
                         console.log('GET_ALL_BOOKS');
-                        return [4 /*yield*/, books_dal_1.default.getAllBooks()];
+                        return [4 /*yield*/, this.booksDataAccessLayer.getAllBooks()];
                     case 8:
                         books = _a.sent();
                         res.status(200).json({
@@ -127,7 +140,7 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.createNewBook = function (res, newBookData) {
+    BooksService.prototype.createNewBook = function (res, newBookData) {
         return __awaiter(this, void 0, void 0, function () {
             var title, pageCount, publishDate, _a, errors, valid, foundedBook, savedBook, error_2;
             return __generator(this, function (_b) {
@@ -139,7 +152,7 @@ var Books = /** @class */ (function () {
                     case 1:
                         _b.trys.push([1, 8, , 9]);
                         if (!valid) return [3 /*break*/, 6];
-                        return [4 /*yield*/, books_dal_1.default.findExistBook(title)];
+                        return [4 /*yield*/, this.booksDataAccessLayer.findExistBook(title)];
                     case 2:
                         foundedBook = _b.sent();
                         if (!foundedBook) return [3 /*break*/, 3];
@@ -148,7 +161,7 @@ var Books = /** @class */ (function () {
                             message: 'Bad request 🔴'
                         });
                         return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, books_dal_1.default.createNewBook(newBookData)];
+                    case 3: return [4 /*yield*/, this.booksDataAccessLayer.createNewBook(newBookData)];
                     case 4:
                         savedBook = _b.sent();
                         res.status(200).json({
@@ -184,19 +197,19 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    Books.prototype.deleteBook = function (bookId, res) {
+    BooksService.prototype.deleteBook = function (bookId, res) {
         return __awaiter(this, void 0, void 0, function () {
             var deletedBookResult, deletedImage, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, books_dal_1.default.deleteBook(bookId)];
+                    case 0: return [4 /*yield*/, this.booksDataAccessLayer.deleteBook(bookId)];
                     case 1:
                         deletedBookResult = _a.sent();
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 6, , 7]);
                         if (!deletedBookResult) return [3 /*break*/, 4];
-                        return [4 /*yield*/, images_dal_1.default.deleteImage(String(deletedBookResult.imageBook))];
+                        return [4 /*yield*/, this.imagesDataAccessLayer.deleteImage(String(deletedBookResult.imageBook))];
                     case 3:
                         deletedImage = _a.sent();
                         if (deletedImage) {
@@ -234,8 +247,11 @@ var Books = /** @class */ (function () {
             });
         });
     };
-    return Books;
+    BooksService = __decorate([
+        tsyringe_1.injectable(),
+        __metadata("design:paramtypes", [books_dal_1.BooksDataAccessLayer, images_dal_1.ImagesDataAccessLayer])
+    ], BooksService);
+    return BooksService;
 }());
-var BooksBLL = new Books;
-exports.default = BooksBLL;
-//# sourceMappingURL=books_bll.js.map
+exports.BooksService = BooksService;
+//# sourceMappingURL=books_service.js.map

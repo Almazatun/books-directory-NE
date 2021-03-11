@@ -10,6 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -57,20 +66,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ImagesService = void 0;
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var book_model_1 = require("../models/book_model");
-var images_dal_1 = __importDefault(require("../dataAccessLayer/images_dal"));
+var tsyringe_1 = require("tsyringe");
+var images_dal_1 = require("./images_dal");
 var uploadPath = path_1.default.join('public', book_model_1.coverImageBasePath);
-var Images = /** @class */ (function () {
-    function Images() {
+var ImagesService = /** @class */ (function () {
+    function ImagesService(imagesDataAccessLayer) {
+        this.imagesDataAccessLayer = imagesDataAccessLayer;
     }
-    Images.prototype.getImages = function (req, res) {
+    ImagesService.prototype.getImages = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var images;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, images_dal_1.default.getImages()];
+                    case 0: return [4 /*yield*/, this.imagesDataAccessLayer.getImages()];
                     case 1:
                         images = _a.sent();
                         res.status(200).json({
@@ -81,7 +93,7 @@ var Images = /** @class */ (function () {
             });
         });
     };
-    Images.prototype.uploadImage = function (req, res) {
+    ImagesService.prototype.uploadImage = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var url, file, filePath, createdImage, error_1;
             return __generator(this, function (_a) {
@@ -96,7 +108,7 @@ var Images = /** @class */ (function () {
                     case 2:
                         file = _a.sent();
                         filePath = url + "/" + uploadPath + "/" + file.filename;
-                        return [4 /*yield*/, images_dal_1.default.createImage(file.filename, filePath)];
+                        return [4 /*yield*/, this.imagesDataAccessLayer.createImage(file.filename, filePath)];
                     case 3:
                         createdImage = _a.sent();
                         res.status(200).json({
@@ -124,12 +136,12 @@ var Images = /** @class */ (function () {
         });
     };
     //Delete uploaded image file when session expired
-    Images.prototype.deleteUploadedImage = function (imageId, res) {
+    ImagesService.prototype.deleteUploadedImage = function (imageId, res) {
         return __awaiter(this, void 0, void 0, function () {
             var isUploadedFile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, images_dal_1.default.deleteImage(imageId)];
+                    case 0: return [4 /*yield*/, this.imagesDataAccessLayer.deleteImage(imageId)];
                     case 1:
                         isUploadedFile = _a.sent();
                         try {
@@ -159,8 +171,11 @@ var Images = /** @class */ (function () {
             });
         });
     };
-    return Images;
+    ImagesService = __decorate([
+        tsyringe_1.injectable(),
+        __metadata("design:paramtypes", [images_dal_1.ImagesDataAccessLayer])
+    ], ImagesService);
+    return ImagesService;
 }());
-var ImagesBLL = new Images;
-exports.default = ImagesBLL;
+exports.ImagesService = ImagesService;
 //# sourceMappingURL=images_bll.js.map

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchStatements = void 0;
-var books_dal_1 = require("../dataAccessLayer/books_dal");
+var books_dal_1 = require("../books/books_dal");
 function searchStatements(title, publishBefore, publishAfter) {
     if (publishBefore && publishBefore !== '' && publishAfter === '') {
         return books_dal_1.SEARCH.PUBLISH_BEFORE;
