@@ -1,4 +1,4 @@
-import {SEARCH} from "../dataAccessLayer/books_dal";
+import {SEARCH} from "../books/books_dal";
 
 export function searchStatements (title: string, publishBefore: string, publishAfter: string): SEARCH | null {
 

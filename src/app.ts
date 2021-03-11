@@ -1,18 +1,20 @@
+import 'reflect-metadata';
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import IndexRouter from "./routes/index";
-import Authors from "./routes/authors";
-import Books from "./routes/books";
-import Images from "./routes/images";
-import Users from './routes/users'
 import {DB_HOST} from "./configs/database";
 import {CORS_ALLOW_HOST, CORS_WITH_CREDENTIALS} from "./configs/cors";
 import {PORT} from "./configs";
 import session from "express-session";
 import mongoDBSession from 'connect-mongodb-session'
 import {MAX_AGE, SESSION} from "./configs/session";
+import {container} from 'tsyringe';
+import {AuthorsController} from "./authors/authors_controller";
+import {BooksController} from "./books/books_controller";
+import {UsersController} from "./users/users_controller";
+import {ImagesController} from "./images/images_controller";
 
 //Session db
 const DBSessions = mongoDBSession(session)
@@ -20,7 +22,7 @@ const DBSessions = mongoDBSession(session)
 
 //Create express app
 const app = express();
-app.use('/public' ,express.static('public'))
+app.use('/public', express.static('public'))
 
 //Config Object to Avoid Deprecation Warnings
 const dbOptions = {
@@ -38,9 +40,9 @@ const db = mongoose.connection;
 
 //Connection events
 db.once("open", () => {
-  console.log("Connected to MongoDB database...");
+    console.log("Connected to MongoDB database...");
 }).on("error", (err: string) => {
-  console.log(err);
+    console.log(err);
 });
 
 //Store session
@@ -68,23 +70,23 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 //Cors
 app.use(
-  cors({
-    credentials: CORS_WITH_CREDENTIALS,
-    origin: CORS_ALLOW_HOST,
-      methods: "GET, PUT, POST, DELETE",
-      optionsSuccessStatus: 200
-  })
+    cors({
+        credentials: CORS_WITH_CREDENTIALS,
+        origin: CORS_ALLOW_HOST,
+        methods: "GET, PUT, POST, DELETE",
+        optionsSuccessStatus: 200
+    })
 );
 
 //Routes
 app.use("/", IndexRouter);
-app.use("/authors", Authors);
-app.use("/books", Books);
-app.use("/images", Images);
-app.use("/users", Users);
+app.use("/authors", container.resolve(AuthorsController).routes());
+app.use("/books", container.resolve(BooksController).routes());
+app.use("/images", container.resolve(ImagesController).routes());
+app.use("/users", container.resolve(UsersController).routes());
 
 
 //Starting server
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+    console.log(`Listening on port ${PORT}`);
 });
