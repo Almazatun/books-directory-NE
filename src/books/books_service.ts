@@ -1,15 +1,24 @@
 import validators from "../utils/validators";
-import BooksDAL, {IBookData} from "../dataAccessLayer/books_dal";
+import {BooksDataAccessLayer, IBookData} from "./books_dal";
 import {Response} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
-import ImagesDAL from "../dataAccessLayer/images_dal";
+import {injectable} from "tsyringe";
+import {ImagesDataAccessLayer} from "../images/images_dal";
 
 const {validatorCreateNewBook} = validators
 const uploadPath = path.join('public', coverImageBasePath)
 
-class Books {
+@injectable()
+export class BooksService {
+    booksDataAccessLayer: BooksDataAccessLayer;
+    imagesDataAccessLayer: ImagesDataAccessLayer
+
+    constructor(booksDataAccessLayer: BooksDataAccessLayer, imagesDataAccessLayer: ImagesDataAccessLayer) {
+        this.booksDataAccessLayer = booksDataAccessLayer
+        this.imagesDataAccessLayer = imagesDataAccessLayer
+    }
 
     async getAllBooks(title: string | any, publishBefore: string | any, publishAfter: string | any, res: Response) {
         let books: unknown
@@ -22,26 +31,26 @@ class Books {
             if (title !== null && title !== "" && title !== undefined) {
                 console.log('SEARCH_OPTIONS')
                 //Search option
-                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                books = await this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
                 res.status(200).json({
                     books: books,
                     searchingOption: title
                 })
             } else if (publishBefore !== null && publishBefore !== "" && publishBefore !== undefined) {
-                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                books = await this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
                 res.status(200).json({
                     books: books,
                     searchingOption: title
                 })
             } else if (publishAfter !== null && publishAfter !== "" && publishAfter !== undefined) {
-                books = await BooksDAL.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
+                books = await this.booksDataAccessLayer.searchBooks(searchTitle, searchPublishBefore, searchPublishAfter)
                 res.status(200).json({
                     books: books,
                     searchingOption: title
                 })
             } else {
                 console.log('GET_ALL_BOOKS')
-                books = await BooksDAL.getAllBooks()
+                books = await this.booksDataAccessLayer.getAllBooks()
                 res.status(200).json({
                     books: books,
                     searchingOption: ''
@@ -63,7 +72,7 @@ class Books {
         try {
             if (valid) {
                 // Make sure the book does not already exist in database storage
-                const foundedBook = await BooksDAL.findExistBook(title)
+                const foundedBook = await this.booksDataAccessLayer.findExistBook(title)
 
                 if (foundedBook) {
                     res.status(400).json({
@@ -71,7 +80,7 @@ class Books {
                         message: 'Bad request 🔴'
                     })
                 } else {
-                    const savedBook = await BooksDAL.createNewBook(newBookData)
+                    const savedBook = await this.booksDataAccessLayer.createNewBook(newBookData)
 
                     res.status(200).json({
                         book: savedBook,
@@ -101,12 +110,12 @@ class Books {
 
     async deleteBook(bookId: string, res: Response) {
 
-        const deletedBookResult = await BooksDAL.deleteBook(bookId)
+        const deletedBookResult = await this.booksDataAccessLayer.deleteBook(bookId)
 
         try {
             if (deletedBookResult) {
                 //Delete image
-                const deletedImage = await ImagesDAL.deleteImage(String(deletedBookResult.imageBook))
+                const deletedImage = await this.imagesDataAccessLayer.deleteImage(String(deletedBookResult.imageBook))
 
                 if (deletedImage)  {
                     //Delete image file
@@ -137,6 +146,3 @@ class Books {
         }
     }
 }
-
-const BooksBLL = new Books
-export default BooksBLL

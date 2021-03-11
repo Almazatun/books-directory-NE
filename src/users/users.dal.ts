@@ -1,7 +1,7 @@
 import User from "../models/user_model";
 import bcrypt from 'bcrypt'
 
-class Users {
+export class UsersDataAccessLayer {
     async createNewUser(newUserData: INewUserData) {
 
         const {email, password, userName} = newUserData
@@ -154,9 +154,6 @@ class Users {
     }
 
 }
-
-const UsersDAL = new Users()
-export default UsersDAL
 
 //Types
 

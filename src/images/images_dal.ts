@@ -1,6 +1,6 @@
 import Image from "../models/image_model";
 
-class Images {
+export class ImagesDataAccessLayer {
 
     async getImages() {
         const images = await Image.find()
@@ -27,6 +27,3 @@ class Images {
     }
 
 }
-
-const ImagesDAL = new Images
-export default ImagesDAL

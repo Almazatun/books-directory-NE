@@ -1,13 +1,22 @@
 import {Request, Response} from "express";
 import validators from "../utils/validators";
-import UsersDAL, {INewUserData} from "../dataAccessLayer/users.dal";
 import bcrypt from 'bcrypt'
-import BooksDAL from "../dataAccessLayer/books_dal";
+import {injectable} from "tsyringe";
+import {INewUserData, UsersDataAccessLayer} from "./users.dal";
+import {BooksDataAccessLayer} from "../books/books_dal";
 
 const {validatorNewUserData, validatorLogIn} = validators
 
+@injectable()
+export class UsersService {
+    usersDataAccessLayer: UsersDataAccessLayer
+    booksDataAccessLayer: BooksDataAccessLayer
 
-class Users {
+    constructor(usersDataAccessLayer: UsersDataAccessLayer, booksDataAccessLayer: BooksDataAccessLayer) {
+        this.usersDataAccessLayer = usersDataAccessLayer
+        this.booksDataAccessLayer = booksDataAccessLayer
+    }
+
     async createNewUser(email: string, userName: string, password: string, res: Response) {
         const {valid, errors} = validatorNewUserData(email, userName, password)
 
@@ -17,7 +26,7 @@ class Users {
             if (valid) {
 
                 // Make sure the user does not already exist
-                const foundUserByEmail = await UsersDAL.findOneUserByEmail(email)
+                const foundUserByEmail = await this.usersDataAccessLayer.findOneUserByEmail(email)
 
                 if (foundUserByEmail) {
                     res.status(400).json({
@@ -32,7 +41,7 @@ class Users {
                         password
                     }
 
-                    const createdUser = await UsersDAL.createNewUser(newUserData)
+                    const createdUser = await this.usersDataAccessLayer.createNewUser(newUserData)
 
                     res.status(200).json({
                         message: 'Successfully Registered 🎉',
@@ -56,7 +65,7 @@ class Users {
 
         const {errors, valid} = validatorLogIn(email, password)
 
-        const user = await UsersDAL.findOneUserByEmail(email)
+        const user = await this.usersDataAccessLayer.findOneUserByEmail(email)
 
         try {
 
@@ -140,7 +149,7 @@ class Users {
 
 
         //Make sure the book exist in the database
-        const isBook = await BooksDAL.findBookById(bookId).catch(() => {
+        const isBook = await this.booksDataAccessLayer.findBookById(bookId).catch(() => {
             res.status(400).json({
                 errors: ['Book Id not valid'],
                 message: 'Bad request 🔴',
@@ -154,7 +163,7 @@ class Users {
                     message: 'Bad request 🔴',
                 })
             } else {
-                const booksCollection = await UsersDAL.addBookUserCollection(userId, bookId)
+                const booksCollection = await this.usersDataAccessLayer.addBookUserCollection(userId, bookId)
                 res.status(200).json({
                     book: isBook,
                     message: 'Book has been added successfully 🎉',
@@ -171,14 +180,14 @@ class Users {
     async deleteBookUserBooksCollection (userId: string, bookId: string, res: Response) {
 
         //Make sure the book exist in the User book collection
-        const isBookInUserCollection: Array<string> | any = await UsersDAL.findBookUserCollection(userId, bookId).catch((error) => {
+        const isBookInUserCollection: Array<string> | any = await this.usersDataAccessLayer.findBookUserCollection(userId, bookId).catch((error) => {
             res.status(400).json({
                 errors: [error],
                 message: 'Book Id not valid',
             })
         })
 
-        const isBook = await BooksDAL.findBookById(isBookInUserCollection[0])
+        const isBook = await this.booksDataAccessLayer.findBookById(isBookInUserCollection[0])
             .catch((error) => {
                 res.status(400).json({
                     errors: [error],
@@ -194,7 +203,7 @@ class Users {
                     message: 'Bad request 🔴',
                 })
             } else {
-               const booksCollection = await UsersDAL.deleteBookUserCollection(userId, bookId)
+               const booksCollection = await this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)
 
                 res.status(200).json({
                     books: isBook,
@@ -212,7 +221,7 @@ class Users {
 
     async getUsers (res: Response ) {
        try {
-           const users = await UsersDAL.getAllUsers()
+           const users = await this.usersDataAccessLayer.getAllUsers()
 
            res.status(200).json({
                users: users
@@ -227,7 +236,7 @@ class Users {
     async updateUserName (userId: string, title: string, res: Response) {
 
         //Make sure the user exist
-        const foundUserById = await UsersDAL.findOneUserById(userId)
+        const foundUserById = await this.usersDataAccessLayer.findOneUserById(userId)
 
         try {
 
@@ -237,7 +246,7 @@ class Users {
                     message: 'Bad request 🔴',
                 })
             } else {
-                const updatedUserData = await UsersDAL.updateUserData(userId, title)
+                const updatedUserData = await this.usersDataAccessLayer.updateUserData(userId, title)
 
                 res.status(200).json({
                     user: updatedUserData,
@@ -253,6 +262,3 @@ class Users {
     }
     
 }
-
-const UsersBLL = new Users
-export default UsersBLL

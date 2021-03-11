@@ -1,7 +1,7 @@
 import Book from "../models/book_model";
 import {searchStatements} from "../utils/searchStatements";
 
-class Books {
+export class BooksDataAccessLayer {
     async getAllBooks() {
         const books = await Book.find()
             .populate('authorBook', ['fistName', 'lastName'])
@@ -135,9 +135,6 @@ class Books {
         return foundBook
     }
 }
-
-const BooksDAL = new Books()
-export default BooksDAL
 
 //Types
 export interface IBookData {

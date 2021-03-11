@@ -2,16 +2,23 @@ import {Response, Request} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
-import ImagesDAL from "../dataAccessLayer/images_dal";
 import {ObjectId} from "mongoose";
+import {injectable} from "tsyringe";
+import {ImagesDataAccessLayer} from "./images_dal";
 
 const uploadPath = path.join('public', coverImageBasePath)
 
-class Images {
+@injectable()
+export class ImagesService {
+    imagesDataAccessLayer: ImagesDataAccessLayer
+
+    constructor(imagesDataAccessLayer: ImagesDataAccessLayer) {
+        this.imagesDataAccessLayer = imagesDataAccessLayer
+    }
 
     async getImages (req: Request, res: Response,) {
 
-        const images = await ImagesDAL.getImages()
+        const images = await this.imagesDataAccessLayer.getImages()
 
         res.status(200).json({
             images: images,
@@ -27,7 +34,7 @@ class Images {
                 const file = await req.file
                 const filePath = `${url}/${uploadPath}/${file.filename}`
 
-                const createdImage = await ImagesDAL.createImage(file.filename, filePath)
+                const createdImage = await this.imagesDataAccessLayer.createImage(file.filename, filePath)
 
                 res.status(200).json({
                     image: createdImage,
@@ -50,7 +57,7 @@ class Images {
     //Delete uploaded image file when session expired
     async deleteUploadedImage(imageId: string, res: Response) {
 
-        const isUploadedFile = await ImagesDAL.deleteImage(imageId)
+        const isUploadedFile = await this.imagesDataAccessLayer.deleteImage(imageId)
 
         try {
             if (isUploadedFile) {
@@ -75,10 +82,6 @@ class Images {
         }
     }
 }
-
-const ImagesBLL = new Images
-export default ImagesBLL
-
 
 //Types
 export interface IUploadFile {

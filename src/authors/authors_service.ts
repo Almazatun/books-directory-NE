@@ -1,17 +1,26 @@
 import validators from "../utils/validators";
-import AuthorsDAL from "../dataAccessLayer/authors_dal";
 import {Response} from "express";
+import {AuthorsDataAccessLayer} from "./authors_dal";
+import {injectable} from 'tsyringe';
+import {IAuthor} from "../models/author_model";
 
 const {validatorCreateNewAuthor} = validators
 
-class Authors {
+@injectable()
+export class AuthorsService {
+    authorsDataAccessLayer: AuthorsDataAccessLayer
+
+    constructor(authorsDataAccessLayer: AuthorsDataAccessLayer) {
+        this.authorsDataAccessLayer = authorsDataAccessLayer
+    }
+
     async createNewAuthor(firstName: string, lastName: string, res: Response) {
         const {valid, errors} = validatorCreateNewAuthor(firstName, lastName)
 
         try {
             if (valid) {
                 // Make sure the author does not already exist in database storage
-                const foundAuthorByLastName = await AuthorsDAL.findOneAuthorByLastName(lastName)
+                const foundAuthorByLastName = await this.authorsDataAccessLayer.findOneAuthorByLastName(lastName)
 
                 if (foundAuthorByLastName) {
                     res.status(400).json({
@@ -19,7 +28,7 @@ class Authors {
                     })
                 } else  {
                     console.log('AUTHOR_SAVED')
-                    const savedAuthor = await AuthorsDAL.saveNewAuthorDB(firstName, lastName)
+                    const savedAuthor = await this.authorsDataAccessLayer.saveNewAuthorDB(firstName, lastName)
 
                     res.status(200).json({
                         author: savedAuthor,
@@ -41,7 +50,7 @@ class Authors {
     }
 
     async deleteAuthor (userId: string, res: Response) {
-        const deletedAuthor = await AuthorsDAL.deleteAuthorDB(userId)
+        const deletedAuthor = await this.authorsDataAccessLayer.deleteAuthorDB(userId)
         try {
             if (deletedAuthor) {
                 res.json({
@@ -50,7 +59,7 @@ class Authors {
                 })
             } else {
                 res.status(400).json ({
-                    errors: ['Book Id not exist'],
+                    errors: ['Author Id not valid'],
                     message: 'Bad request 🤬'
                 })
             }
@@ -62,16 +71,13 @@ class Authors {
         }
     }
 
-    async getAuthors (firstName: string | any, res: Response ) {
+    async getAuthors (firstName: string | any, res: Response ): Promise<unknown | IAuthor[]> {
         if (firstName !== null && firstName !== '') {
-            const authors = await AuthorsDAL.searchAuthorsByFistName(firstName)
-            res.json(authors)
+            const authors = await this.authorsDataAccessLayer.searchAuthorsByFistName(firstName)
+            return res.json(authors)
         } else {
-            const authors = await AuthorsDAL.getAllAuthors()
+            const authors = await this.authorsDataAccessLayer.getAllAuthors()
             res.json(authors)
         }
     }
 }
-
-const AuthorsBLL = new Authors
-export default AuthorsBLL

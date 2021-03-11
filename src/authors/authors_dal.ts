@@ -1,6 +1,7 @@
 import Author from "../models/author_model";
 
-class Authors {
+export class AuthorsDataAccessLayer {
+
     async saveNewAuthorDB(firstName: string, lastName: string) {
         const newAuthor = new Author({
             firstName: firstName,
@@ -40,6 +41,3 @@ class Authors {
         return foundAuthor
     }
 }
-
-const AuthorsDAL = new Authors
-export default AuthorsDAL
