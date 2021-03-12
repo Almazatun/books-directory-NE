@@ -74,7 +74,7 @@ app.use(routesArray,
         saveUninitialized: false,
         store: sessionStore,
         cookie: {
-            sameSite: false,
+            sameSite: "none",
             maxAge: MAX_AGE,
             //https://github.com/expressjs/session#cookiesecure
             secure: false,
