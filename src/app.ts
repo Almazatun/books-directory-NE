@@ -45,28 +45,9 @@ db.once("open", () => {
     console.log(err);
 });
 
-//Store session
-const sessionStore = new DBSessions({
-    uri: DB_HOST,
-    collection: 'sessions'
-})
-
-app.use(
-    session({
-        secret: SESSION,
-        resave: true,
-        saveUninitialized: false,
-        store: sessionStore,
-        cookie: {
-            sameSite: false,
-            maxAge: MAX_AGE,
-        }
-    })
-)
-
 //BodyParser
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({extended: false}))
 
 //Cors
 app.use(
@@ -77,6 +58,30 @@ app.use(
         optionsSuccessStatus: 200
     })
 );
+
+//Store session
+const sessionStore = new DBSessions({
+    uri: DB_HOST,
+    collection: 'sessions'
+})
+
+const routesArray = ['/users/login', '/users/authchecker', '/users/logout'];
+
+app.use(routesArray,
+    session({
+        secret: SESSION,
+        resave: false,
+        saveUninitialized: false,
+        store: sessionStore,
+        cookie: {
+            sameSite: false,
+            maxAge: MAX_AGE,
+            //https://github.com/expressjs/session#cookiesecure
+            secure: false,
+            httpOnly: true
+        }
+    })
+)
 
 //Routes
 app.use("/", IndexRouter);
