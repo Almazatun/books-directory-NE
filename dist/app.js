@@ -42,30 +42,34 @@ db.once("open", function () {
 }).on("error", function (err) {
     console.log(err);
 });
-//Store session
-var sessionStore = new DBSessions({
-    uri: database_1.DB_HOST,
-    collection: 'sessions'
-});
-app.use(express_session_1.default({
-    secret: session_1.SESSION,
-    resave: true,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: {
-        sameSite: false,
-        maxAge: session_1.MAX_AGE,
-    }
-}));
 //BodyParser
 app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use(body_parser_1.default.urlencoded({ extended: false }));
 //Cors
 app.use(cors_1.default({
     credentials: cors_2.CORS_WITH_CREDENTIALS,
     origin: cors_2.CORS_ALLOW_HOST,
     methods: "GET, PUT, POST, DELETE",
     optionsSuccessStatus: 200
+}));
+//Store session
+var sessionStore = new DBSessions({
+    uri: database_1.DB_HOST,
+    collection: 'sessions'
+});
+var routesArray = ['/users/login', '/users/authchecker', '/users/logout'];
+app.use(routesArray, express_session_1.default({
+    secret: session_1.SESSION,
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+        sameSite: false,
+        maxAge: session_1.MAX_AGE,
+        //https://github.com/expressjs/session#cookiesecure
+        secure: false,
+        httpOnly: true
+    }
 }));
 //Routes
 app.use("/", index_1.default);
