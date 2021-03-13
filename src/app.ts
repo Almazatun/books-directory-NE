@@ -73,14 +73,14 @@ const routesArray = ['/users/login', '/users/authchecker', '/users/logout'];
 app.use(routesArray,
     session({
         secret: SESSION,
-        resave: false,
+        resave: true,
         saveUninitialized: false,
         store: sessionStore,
         cookie: {
-            sameSite: false,
+            sameSite: "none",
             maxAge: MAX_AGE,
             //https://github.com/expressjs/session#cookiesecure
-            secure: false,
+            secure: true,
             httpOnly: true
         }
     })
