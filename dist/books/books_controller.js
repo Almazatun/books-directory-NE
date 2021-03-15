@@ -36,7 +36,7 @@ var BooksController = /** @class */ (function () {
     };
     BooksController.prototype.routes = function () {
         var _this = this;
-        this.router.get("/", function (req, res) { return _this.getAllBooks(req, res); });
+        this.router.get("/", authMe_1.authMe, function (req, res) { return _this.getAllBooks(req, res); });
         this.router.post("/new", authMe_1.authMe, function (req, res) { return _this.createNewBook(req, res); });
         this.router.delete("/delete/:id", authMe_1.authMe, function (req, res) { return _this.deleteBook(req, res); });
         return this.router;

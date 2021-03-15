@@ -37,7 +37,7 @@ export class BooksController {
     }
 
     routes(){
-        this.router.get("/", (req: Request, res: Response) => this.getAllBooks(req, res))
+        this.router.get("/", authMe, (req: Request, res: Response) => this.getAllBooks(req, res))
         this.router.post("/new", authMe, (req: Request, res: Response) => this.createNewBook(req, res))
         this.router.delete("/delete/:id", authMe, (req: Request, res: Response) => this.deleteBook(req, res))
 

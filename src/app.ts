@@ -68,10 +68,7 @@ const sessionStore = new DBSessions({
 //https://github.com/expressjs/session/issues/633
 app.set('trust proxy', 1);
 
-const routesArray = ['/users/login', '/users/authchecker', '/users/logout'];
-
-app.use(routesArray,
-    session({
+app.use(session({
         secret: SESSION,
         resave: true,
         saveUninitialized: false,
@@ -80,7 +77,6 @@ app.use(routesArray,
             sameSite: "none",
             maxAge: MAX_AGE,
             //https://github.com/expressjs/session#cookiesecure
-            secure: true,
             httpOnly: true
         }
     })

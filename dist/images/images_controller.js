@@ -15,6 +15,7 @@ var tsyringe_1 = require("tsyringe");
 var images_bll_1 = require("./images_bll");
 var authMe_1 = require("../hellpers/authMe");
 var privateRoutes_1 = require("../configs/privateRoutes");
+var multerStorage_1 = require("../utils/multerStorage");
 var ImagesController = /** @class */ (function () {
     function ImagesController(imagesService) {
         this.imagesService = imagesService;
@@ -35,7 +36,7 @@ var ImagesController = /** @class */ (function () {
     ImagesController.prototype.routes = function () {
         var _this = this;
         this.router.get(privateRoutes_1.IMAGES_ROUTE_URL_GET, function (req, res) { return _this.getImage(req, res); });
-        this.router.post("/upload", authMe_1.authMe, function (req, res) { return _this.uploadImage(req, res); });
+        this.router.post("/upload", authMe_1.authMe, multerStorage_1.upload.single('cover'), function (req, res) { return _this.uploadImage(req, res); });
         this.router.delete(privateRoutes_1.IMAGES_ROUTE_URL_DELETE, authMe_1.authMe, function (req, res) { return _this.deleteUploadedImage(req, res); });
         return this.router;
     };

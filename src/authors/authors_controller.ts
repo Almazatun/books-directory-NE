@@ -35,7 +35,7 @@ export class AuthorsController {
     }
 
     routes(){
-        this.router.get("/", (req: Request, res: Response) => this.getAllAuthors(req, res))
+        this.router.get("/", authMe, (req: Request, res: Response) => this.getAllAuthors(req, res))
         this.router.post("/new", authMe, (req: Request, res: Response) => this.createNewAuthor(req, res))
         this.router.delete("/delete/:id", authMe, (req: Request, res: Response) => this.deleteAuthor(req, res))
 

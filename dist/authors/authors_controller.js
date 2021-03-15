@@ -37,7 +37,7 @@ var AuthorsController = /** @class */ (function () {
     };
     AuthorsController.prototype.routes = function () {
         var _this = this;
-        this.router.get("/", function (req, res) { return _this.getAllAuthors(req, res); });
+        this.router.get("/", authMe_1.authMe, function (req, res) { return _this.getAllAuthors(req, res); });
         this.router.post("/new", authMe_1.authMe, function (req, res) { return _this.createNewAuthor(req, res); });
         this.router.delete("/delete/:id", authMe_1.authMe, function (req, res) { return _this.deleteAuthor(req, res); });
         return this.router;

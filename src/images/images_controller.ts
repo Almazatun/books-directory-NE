@@ -3,6 +3,7 @@ import {autoInjectable} from "tsyringe";
 import {ImagesService} from "./images_bll";
 import {authMe} from "../hellpers/authMe";
 import {IMAGES_ROUTE_URL_DELETE, IMAGES_ROUTE_URL_GET} from "../configs/privateRoutes";
+import {upload} from "../utils/multerStorage";
 
 @autoInjectable()
 export class ImagesController {
@@ -33,7 +34,7 @@ export class ImagesController {
 
     routes() {
         this.router.get(IMAGES_ROUTE_URL_GET, (req: Request, res: Response) => this.getImage(req, res))
-        this.router.post("/upload", authMe, (req: Request, res: Response) => this.uploadImage(req, res))
+        this.router.post("/upload", authMe, upload.single('cover'), (req: Request, res: Response) => this.uploadImage(req, res))
         this.router.delete(IMAGES_ROUTE_URL_DELETE, authMe, (req: Request, res: Response) => this.deleteUploadedImage(req, res))
 
         return this.router
