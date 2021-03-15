@@ -59,9 +59,28 @@ var sessionStore = new DBSessions({
 });
 //https://github.com/expressjs/session/issues/633
 app.set('trust proxy', 1);
-app.use(express_session_1.default({
+var routesArray = [
+    '/users/login',
+    '/users/authchecker',
+    '/users/logout',
+    '/users/register',
+    '/users/user/:id/addbook',
+    '/users/user/:id/deletebook/:bookId',
+    'users/user/:id/update',
+    //
+    '/authors/new',
+    '/authors/',
+    '/authors/delete/:id',
+    //
+    '/books/',
+    '/books/new',
+    '/books/delete/:id',
+    //
+    'images/upload'
+];
+app.use(routesArray, express_session_1.default({
     secret: session_1.SESSION,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
@@ -69,6 +88,7 @@ app.use(express_session_1.default({
         maxAge: session_1.MAX_AGE,
         //https://github.com/expressjs/session#cookiesecure
         secure: false,
+        httpOnly: true
     }
 }));
 //Routes
