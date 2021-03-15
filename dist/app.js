@@ -30,8 +30,7 @@ app.use('/public', express_1.default.static('public'));
 var dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
-    useMongoClient: true
+    useCreateIndex: true
 };
 //MongoDB
 //Connection database
@@ -68,10 +67,8 @@ app.use(express_session_1.default({
     saveUninitialized: true,
     store: sessionStore,
     cookie: {
-        sameSite: "none",
         maxAge: session_1.MAX_AGE,
         //https://github.com/expressjs/session#cookiesecure
-        secure: false,
         httpOnly: true
     }
 }));

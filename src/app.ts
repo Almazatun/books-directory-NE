@@ -29,8 +29,7 @@ app.use('/public', express.static('public'))
 const dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
-    useMongoClient: true
+    useCreateIndex: true
 };
 
 //MongoDB
@@ -70,7 +69,6 @@ const sessionStore = new DBSessions({
 //https://github.com/expressjs/session/issues/633
 app.set('trust proxy', 1);
 
-
 app.use(cookieParser());
 app.use(session({
         secret: SESSION,
@@ -78,10 +76,8 @@ app.use(session({
         saveUninitialized: true,
         store: sessionStore,
         cookie: {
-            sameSite: "none",
             maxAge: MAX_AGE,
             //https://github.com/expressjs/session#cookiesecure
-            secure: false,
             httpOnly: true
         }
     })
