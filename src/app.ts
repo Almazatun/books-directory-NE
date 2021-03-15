@@ -15,6 +15,7 @@ import {AuthorsController} from "./authors/authors_controller";
 import {BooksController} from "./books/books_controller";
 import {UsersController} from "./users/users_controller";
 import {ImagesController} from "./images/images_controller";
+import cookieParser from "cookie-parser";
 
 //Session db
 const DBSessions = mongoDBSession(session)
@@ -28,7 +29,8 @@ app.use('/public', express.static('public'))
 const dbOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useMongoClient: true
 };
 
 //MongoDB
@@ -68,30 +70,12 @@ const sessionStore = new DBSessions({
 //https://github.com/expressjs/session/issues/633
 app.set('trust proxy', 1);
 
-const routesArray = [
-    '/users/login',
-    '/users/authchecker',
-    '/users/logout',
-    '/users/register',
-    '/users/user/:id/addbook',
-    '/users/user/:id/deletebook/:bookId',
-    'users/user/:id/update',
-    //
-    '/authors/new',
-    '/authors/',
-    '/authors/delete/:id',
-    //
-    '/books/',
-    '/books/new',
-    '/books/delete/:id',
-    //
-    '/images/upload'
-];
 
-app.use(routesArray ,session({
+app.use(cookieParser());
+app.use(session({
         secret: SESSION,
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         store: sessionStore,
         cookie: {
             sameSite: "none",
