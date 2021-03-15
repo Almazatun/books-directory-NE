@@ -68,7 +68,7 @@ app.use(express_session_1.default({
         sameSite: "none",
         maxAge: session_1.MAX_AGE,
         //https://github.com/expressjs/session#cookiesecure
-        httpOnly: true
+        secure: false,
     }
 }));
 //Routes

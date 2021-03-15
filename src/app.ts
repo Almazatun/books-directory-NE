@@ -77,7 +77,7 @@ app.use(session({
             sameSite: "none",
             maxAge: MAX_AGE,
             //https://github.com/expressjs/session#cookiesecure
-            httpOnly: true
+            secure: false,
         }
     })
 )
