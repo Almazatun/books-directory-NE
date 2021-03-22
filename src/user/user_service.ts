@@ -2,8 +2,7 @@ import {Request, Response} from "express";
 import validators from "../utils/validators";
 import bcrypt from 'bcrypt'
 import {injectable} from "tsyringe";
-import {INewUserData} from "./user.dal";
-import {IUserDataAccessLayer} from "./types";
+import {INewUserData, IUserDataAccessLayer} from "./types";
 import {IBookDataAccessLayer} from "../book/types";
 
 const {validatorNewUserData, validatorLogIn} = validators

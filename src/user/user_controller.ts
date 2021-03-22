@@ -14,42 +14,42 @@ export class UserController {
     };
 
     //Register
-    public registerUser(req: Request, res: Response) {
+    public registerUser(req: Request, res: Response): Promise<any> {
         const {email, userName, password} = req.body
         return this.usersService.createNewUser(email, userName, password, res)
     };
 
     //Log in
-    public logInUser(req: Request, res: Response) {
+    public logInUser(req: Request, res: Response): Promise<any> {
         const {email, password} = req.body
         return this.usersService.logIn(email, password, req, res)
     };
 
     //Log out
-    public logOutUser(req: Request, res: Response) {
+    public logOutUser(req: Request, res: Response): Promise<any>  {
         return this.usersService.logOut(req, res)
     };
 
     //Auth me
-    public authMeUser(req: Request, res: Response) {
+    public authMeUser(req: Request, res: Response): Promise<any>  {
         return this.usersService.autoChecker(req, res)
     };
 
     //Update userName
-    public updateUserName(req: Request, res: Response) {
+    public updateUserName(req: Request, res: Response): Promise<any>  {
         const {title}: { title: string } = req.body
 
         return this.usersService.updateUserName(req.params.id, title, res)
     };
 
-    public addBookUserCollection(req: Request, res: Response) {
+    public addBookUserCollection(req: Request, res: Response): Promise<any>  {
 
         const {bookId}: { bookId: string } = req.body
 
         return this.usersService.addBookUserBooksCollection(req.params.id, bookId, res)
     };
 
-    public deleteBookUserCollection(req: Request, res: Response) {
+    public deleteBookUserCollection(req: Request, res: Response): Promise<any>  {
 
         return this.usersService.deleteBookUserBooksCollection(req.params.id, req.params.bookId, res)
     };

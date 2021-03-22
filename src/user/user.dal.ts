@@ -1,6 +1,6 @@
 import User from "../models/user_model";
 import bcrypt from 'bcrypt'
-import {IUserDataAccessLayer} from "./types";
+import {INewUserData, IUserDataAccessLayer} from "./types";
 
 export class UserDataAccessLayer implements IUserDataAccessLayer {
 
@@ -155,12 +155,4 @@ export class UserDataAccessLayer implements IUserDataAccessLayer {
         return users
     };
 
-}
-
-//Types
-
-export interface INewUserData {
-    email: string
-    userName: string
-    password: string
 }
