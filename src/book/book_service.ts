@@ -13,15 +13,15 @@ const uploadPath = path.join('public', coverImageBasePath);
 
 @injectable()
 export class BookService {
-    booksDataAccessLayer: IBookDataAccessLayer;
-    imagesDataAccessLayer: ImagesDataAccessLayer;
+    private booksDataAccessLayer: IBookDataAccessLayer;
+    private imagesDataAccessLayer: ImagesDataAccessLayer;
 
     constructor(booksDataAccessLayer: IBookDataAccessLayer, imagesDataAccessLayer: ImagesDataAccessLayer) {
         this.booksDataAccessLayer = booksDataAccessLayer;
         this.imagesDataAccessLayer = imagesDataAccessLayer;
     };
 
-    async getAllBooks(title: string | any, publishBefore: string | any, publishAfter: string | any, res: Response) {
+    public async getAllBooks(title: string | any, publishBefore: string | any, publishAfter: string | any, res: Response) {
         let books: unknown
 
         let searchTitle: string = title ? title : '';
@@ -65,7 +65,7 @@ export class BookService {
         }
     };
 
-    async createNewBook(res: Response, newBookData: IBookData) {
+    public async createNewBook(res: Response, newBookData: IBookData) {
         const {title, pageCount, publishDate} = newBookData
 
         const {errors, valid} = validatorCreateNewBook(title, pageCount, publishDate)
@@ -109,7 +109,7 @@ export class BookService {
         }
     };
 
-    async deleteBook(bookId: string, res: Response) {
+    public async deleteBook(bookId: string, res: Response) {
 
         const deletedBookResult = await this.booksDataAccessLayer.deleteBook(bookId)
 
