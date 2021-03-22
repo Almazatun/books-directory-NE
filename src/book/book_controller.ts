@@ -1,14 +1,14 @@
 import {Request, Response, Router} from "express";
 import {autoInjectable} from "tsyringe";
-import {BooksService} from "./books_service";
+import {BookService} from "./book_service";
 import {authMe} from "../hellpers/authMe";
 
 @autoInjectable()
-export class BooksController {
-    booksService: BooksService
+export class BookController {
+    booksService: BookService
     router: Router
 
-    constructor(booksService: BooksService) {
+    constructor(booksService: BookService) {
         this.booksService = booksService
         // @ts-ignore
         this.router = new Router();

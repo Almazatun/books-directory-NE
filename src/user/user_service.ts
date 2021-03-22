@@ -2,22 +2,24 @@ import {Request, Response} from "express";
 import validators from "../utils/validators";
 import bcrypt from 'bcrypt'
 import {injectable} from "tsyringe";
-import {INewUserData, UsersDataAccessLayer} from "./users.dal";
-import {BooksDataAccessLayer} from "../books/books_dal";
+import {INewUserData} from "./user.dal";
+import {IUserDataAccessLayer} from "./types";
+import {IBookDataAccessLayer} from "../book/types";
 
 const {validatorNewUserData, validatorLogIn} = validators
 
 @injectable()
-export class UsersService {
-    usersDataAccessLayer: UsersDataAccessLayer
-    booksDataAccessLayer: BooksDataAccessLayer
+export class UserService {
+    //DI principle
+    private usersDataAccessLayer: IUserDataAccessLayer;
+    private booksDataAccessLayer: IBookDataAccessLayer;
 
-    constructor(usersDataAccessLayer: UsersDataAccessLayer, booksDataAccessLayer: BooksDataAccessLayer) {
+    constructor(usersDataAccessLayer: IUserDataAccessLayer, booksDataAccessLayer: IBookDataAccessLayer) {
         this.usersDataAccessLayer = usersDataAccessLayer
         this.booksDataAccessLayer = booksDataAccessLayer
-    }
+    };
 
-    async createNewUser(email: string, userName: string, password: string, res: Response) {
+    public async createNewUser(email: string, userName: string, password: string, res: Response) {
         const {valid, errors} = validatorNewUserData(email, userName, password)
 
         console.log(errors)
@@ -59,9 +61,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async logIn(email: string, password: string, req: Request, res: Response) {
+    public async logIn(email: string, password: string, req: Request, res: Response) {
 
         const {errors, valid} = validatorLogIn(email, password)
 
@@ -106,9 +108,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async logOut(req: Request, res: Response) {
+    public async logOut(req: Request, res: Response) {
 
         try {
             req.session.destroy((err) => {
@@ -126,9 +128,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async autoChecker(req: Request, res: Response) {
+    public async autoChecker(req: Request, res: Response) {
         try {
             const sessUser = req.session.user;
             if (sessUser) {
@@ -143,9 +145,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async addBookUserBooksCollection (userId: string, bookId: string, res: Response) {
+    public async addBookUserBooksCollection (userId: string, bookId: string, res: Response) {
 
 
         //Make sure the book exist in the database
@@ -175,9 +177,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async deleteBookUserBooksCollection (userId: string, bookId: string, res: Response) {
+    public async deleteBookUserBooksCollection (userId: string, bookId: string, res: Response) {
 
         //Make sure the book exist in the User book collection
         const isBookInUserCollection: Array<string> | any = await this.usersDataAccessLayer.findBookUserCollection(userId, bookId).catch((error) => {
@@ -217,9 +219,9 @@ export class UsersService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async getUsers (res: Response ) {
+    public async getUsers (res: Response ) {
        try {
            const users = await this.usersDataAccessLayer.getAllUsers()
 
@@ -231,9 +233,9 @@ export class UsersService {
                error: [error]
            })
        }
-    }
+    };
 
-    async updateUserName (userId: string, title: string, res: Response) {
+    public async updateUserName (userId: string, title: string, res: Response) {
 
         //Make sure the user exist
         const foundUserById = await this.usersDataAccessLayer.findOneUserById(userId)
@@ -259,6 +261,6 @@ export class UsersService {
                 error: [error]
             })
         }
-    }
+    };
     
 }

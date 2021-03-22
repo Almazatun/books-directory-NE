@@ -1,8 +1,10 @@
 import User from "../models/user_model";
 import bcrypt from 'bcrypt'
+import {IUserDataAccessLayer} from "./types";
 
-export class UsersDataAccessLayer {
-    async createNewUser(newUserData: INewUserData) {
+export class UserDataAccessLayer implements IUserDataAccessLayer {
+
+    public async createNewUser(newUserData: INewUserData) {
 
         const {email, password, userName} = newUserData
 
@@ -19,9 +21,9 @@ export class UsersDataAccessLayer {
         const createdUser = await newUser.save()
 
         return createdUser
-    }
+    };
 
-    async updateUserData (userId: string, title: string) {
+    public async updateUserData(userId: string, title: string) {
 
         const updatedUserData = await User.findByIdAndUpdate(userId, {userName: title}, {new: true})
             .populate(
@@ -39,14 +41,14 @@ export class UsersDataAccessLayer {
             })
 
         return updatedUserData
-    }
+    };
 
-    async addBookUserCollection (userId: string, bookId: string) {
+    public async addBookUserCollection(userId: string, bookId: string) {
 
         // @ts-ignore
         //Have no idea how fix that the issue
         //{_id: userId}  TS2322: Type 'string' is not assignable to type 'Condition '
-        const updatedUserData = await User.update({_id: userId},{
+        const updatedUserData = await User.update({_id: userId}, {
 
             //$pull option
             //https://docs.mongodb.com/manual/reference/operator/update/pull/
@@ -71,14 +73,14 @@ export class UsersDataAccessLayer {
             }).exec();
 
         return updatedUserData
-    }
+    };
 
-    async deleteBookUserCollection (userId: string, bookId: string) {
+    public async deleteBookUserCollection(userId: string, bookId: string) {
 
         // @ts-ignore
         //Have no idea how fix that the issue
         //{_id: userId}  TS2322: Type 'string' is not assignable to type 'Condition '
-        const updatedUserData = await User.update({_id: userId},{
+        const updatedUserData = await User.update({_id: userId}, {
 
             //$pull option
             //https://docs.mongodb.com/manual/reference/operator/update/pull/
@@ -102,39 +104,39 @@ export class UsersDataAccessLayer {
 
 
         return updatedUserData
-    }
+    };
 
 
-    async findOneUserByEmail (email: string) {
+    public async findOneUserByEmail(email: string) {
 
         const foundUser = await User.findOne({email}).exec()
 
         return foundUser
     }
 
-    async findBookUserCollection (userId: string, bookId: string) {
+    public async findBookUserCollection(userId: string, bookId: string) {
 
         // @ts-ignore
         const foundBookUserCollection = await User.find({_id: userId},
             {
-            userBooks: bookId,
-        })
+                userBooks: bookId,
+            })
 
         const foundBookId: object = foundBookUserCollection[0].userBooks
 
         return foundBookId
 
-    }
+    };
 
-    async findOneUserById (userId: string) {
+    public async findOneUserById(userId: string) {
 
         const foundUser = await User.findById(userId)
 
         return foundUser
 
-    }
+    };
 
-    async getAllUsers () {
+    public async getAllUsers() {
         const users = await User.find()
             .populate(
                 {
@@ -151,7 +153,7 @@ export class UsersDataAccessLayer {
             })
 
         return users
-    }
+    };
 
 }
 

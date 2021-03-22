@@ -1,31 +1,32 @@
 import validators from "../utils/validators";
-import {BooksDataAccessLayer, IBookData} from "./books_dal";
 import {Response} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
 import {injectable} from "tsyringe";
 import {ImagesDataAccessLayer} from "../images/images_dal";
+import {IBookData, IBookDataAccessLayer} from "./types";
 
-const {validatorCreateNewBook} = validators
-const uploadPath = path.join('public', coverImageBasePath)
+//
+const {validatorCreateNewBook} = validators;
+const uploadPath = path.join('public', coverImageBasePath);
 
 @injectable()
-export class BooksService {
-    booksDataAccessLayer: BooksDataAccessLayer;
-    imagesDataAccessLayer: ImagesDataAccessLayer
+export class BookService {
+    booksDataAccessLayer: IBookDataAccessLayer;
+    imagesDataAccessLayer: ImagesDataAccessLayer;
 
-    constructor(booksDataAccessLayer: BooksDataAccessLayer, imagesDataAccessLayer: ImagesDataAccessLayer) {
-        this.booksDataAccessLayer = booksDataAccessLayer
-        this.imagesDataAccessLayer = imagesDataAccessLayer
-    }
+    constructor(booksDataAccessLayer: IBookDataAccessLayer, imagesDataAccessLayer: ImagesDataAccessLayer) {
+        this.booksDataAccessLayer = booksDataAccessLayer;
+        this.imagesDataAccessLayer = imagesDataAccessLayer;
+    };
 
     async getAllBooks(title: string | any, publishBefore: string | any, publishAfter: string | any, res: Response) {
         let books: unknown
 
-        let searchTitle: string = title ? title : ''
-        let searchPublishBefore: string = publishBefore ? publishBefore : ''
-        let searchPublishAfter: string = publishAfter ? publishAfter : ''
+        let searchTitle: string = title ? title : '';
+        let searchPublishBefore: string = publishBefore ? publishBefore : '';
+        let searchPublishAfter: string = publishAfter ? publishAfter : '';
 
         try {
             if (title !== null && title !== "" && title !== undefined) {
@@ -62,7 +63,7 @@ export class BooksService {
                 message: "Some error"
             })
         }
-    }
+    };
 
     async createNewBook(res: Response, newBookData: IBookData) {
         const {title, pageCount, publishDate} = newBookData
@@ -106,7 +107,7 @@ export class BooksService {
                 })
             }
         }
-    }
+    };
 
     async deleteBook(bookId: string, res: Response) {
 
@@ -144,5 +145,5 @@ export class BooksService {
                 message: 'Book Id not valid 🤬'
             })
         }
-    }
+    };
 }
