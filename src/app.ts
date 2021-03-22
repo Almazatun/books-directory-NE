@@ -12,18 +12,20 @@ import mongoDBSession from 'connect-mongodb-session'
 import {MAX_AGE, SESSION} from "./configs/session";
 import {container} from 'tsyringe';
 import {AuthorsController} from "./authors/authors_controller";
-import {BooksController} from "./books/books_controller";
-import {UsersController} from "./users/users_controller";
 import {ImagesController} from "./images/images_controller";
 import cookieParser from "cookie-parser";
+import {userController} from "./user";
+import {bookController} from "./book";
 
 //Session db
-const DBSessions = mongoDBSession(session)
+const DBSessions = mongoDBSession(session);
 
 
 //Create express app
 const app = express();
-app.use('/public', express.static('public'))
+
+app.use(cookieParser());
+app.use('/public', express.static('public'));
 
 //Config Object to Avoid Deprecation Warnings
 const dbOptions = {
@@ -48,7 +50,7 @@ db.once("open", () => {
 
 //BodyParser
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}));
 
 //Cors
 app.use(
@@ -64,31 +66,28 @@ app.use(
 const sessionStore = new DBSessions({
     uri: DB_HOST,
     collection: 'sessions'
-})
+});
 
-//https://github.com/expressjs/session/issues/633
-app.set('trust proxy', 1);
-
-app.use(cookieParser());
 app.use(session({
+        name: 'cls',
         secret: SESSION,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         store: sessionStore,
         cookie: {
             maxAge: MAX_AGE,
-            //https://github.com/expressjs/session#cookiesecure
-            httpOnly: true
+            httpOnly: true,
+            secure: false
         }
     })
-)
+);
 
 //Routes
 app.use("/", IndexRouter);
 app.use("/authors", container.resolve(AuthorsController).routes());
-app.use("/books", container.resolve(BooksController).routes());
+app.use("/books", bookController.routes());
 app.use("/images", container.resolve(ImagesController).routes());
-app.use("/users", container.resolve(UsersController).routes());
+app.use("/users", userController.routes());
 
 
 //Starting server
