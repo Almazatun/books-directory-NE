@@ -9,15 +9,15 @@ const uploadPath = path.join('public', coverImageBasePath)
 
 @injectable()
 export class ImageService {
-    private imagesDataAccessLayer: IImageDataAccessLayer
+    private imageDataAccessLayer: IImageDataAccessLayer
 
     constructor(imagesDataAccessLayer: IImageDataAccessLayer) {
-        this.imagesDataAccessLayer = imagesDataAccessLayer
+        this.imageDataAccessLayer = imagesDataAccessLayer
     }
 
     async getImages (req: Request, res: Response,) {
 
-        const images = await this.imagesDataAccessLayer.getImages()
+        const images = await this.imageDataAccessLayer.getImages()
 
         res.status(200).json({
             images: images,
@@ -33,7 +33,7 @@ export class ImageService {
                 const file = await req.file
                 const filePath = `${url}/${uploadPath}/${file.filename}`
 
-                const createdImage = await this.imagesDataAccessLayer.createImage(file.filename, filePath)
+                const createdImage = await this.imageDataAccessLayer.createImage(file.filename, filePath)
 
                 res.status(200).json({
                     image: createdImage,
@@ -56,7 +56,7 @@ export class ImageService {
     //Delete uploaded image file when session expired
     async deleteUploadedImage(imageId: string, res: Response) {
 
-        const isUploadedFile = await this.imagesDataAccessLayer.deleteImage(imageId)
+        const isUploadedFile = await this.imageDataAccessLayer.deleteImage(imageId)
 
         try {
             if (isUploadedFile) {

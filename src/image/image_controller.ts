@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {autoInjectable} from "tsyringe";
-import {ImageService} from "./image_bll";
+import {ImageService} from "./image_service";
 import {authMe} from "../hellpers/authMe";
 import {IMAGES_ROUTE_URL_DELETE, IMAGES_ROUTE_URL_GET} from "../configs/privateRoutes";
 import {upload} from "../utils/multerStorage";
