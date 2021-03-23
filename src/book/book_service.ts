@@ -4,8 +4,8 @@ import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
 import {injectable} from "tsyringe";
-import {ImagesDataAccessLayer} from "../images/images_dal";
 import {IBookData, IBookDataAccessLayer} from "./types";
+import {IImageDataAccessLayer} from "../image/types";
 
 //
 const {validatorCreateNewBook} = validators;
@@ -14,9 +14,9 @@ const uploadPath = path.join('public', coverImageBasePath);
 @injectable()
 export class BookService {
     private booksDataAccessLayer: IBookDataAccessLayer;
-    private imagesDataAccessLayer: ImagesDataAccessLayer;
+    private imagesDataAccessLayer: IImageDataAccessLayer;
 
-    constructor(booksDataAccessLayer: IBookDataAccessLayer, imagesDataAccessLayer: ImagesDataAccessLayer) {
+    constructor(booksDataAccessLayer: IBookDataAccessLayer, imagesDataAccessLayer: IImageDataAccessLayer) {
         this.booksDataAccessLayer = booksDataAccessLayer;
         this.imagesDataAccessLayer = imagesDataAccessLayer;
     };
