@@ -4,20 +4,8 @@ import {Request, Response} from "express";
 import {UserService} from "../../user/user_service";
 import {MockUserRepo} from "../../user/mock_user_repo";
 import {UserController} from "../../user/user_controller";
-import {IBookDataAccessLayer} from "../../book/types";
-
-const mockResponse = () => {
-    const res: { [key: string]: any } = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-};
-
-const mockRequest = () => {
-    const req: { [key: string]: any } = {};
-    req.body = jest.fn().mockReturnValue(req);
-    return req;
-};
+import {MockBookRepo} from "../../book/mock_book_repo";
+import {mockRequest, mockResponse} from "../index";
 
 
 
@@ -30,7 +18,7 @@ describe("UserController", () => {
     beforeEach(() => {
         userService = new UserService(
             new MockUserRepo(),
-            {} as IBookDataAccessLayer
+            new MockBookRepo()
         )
     });
 
@@ -57,7 +45,7 @@ describe("UserController", () => {
         expect(user.email).not.toEqual("person1@gmail.ru");
     });
 
-    test( "should be logged in a user" ,async () => {
+    test("should be logged in a user", async () => {
         const userLogIn = {
             email: "person1@gmail.com",
             password: "person112345@",
@@ -71,16 +59,15 @@ describe("UserController", () => {
         expect(user.email).not.toEqual("person2@gmail.com");
     });
 
-    test( "should be log out a user" ,async () => {
+    test("should be log out a user", async () => {
 
         sinon.stub(userService, "logOut")
 
-        const user = await new UserController(userService).logOutUser(req as Request, res as Response);
+        await new UserController(userService).logOutUser(req as Request, res as Response);
 
         res.status(200);
         res.json({
             message: "Logged out successfully"
-        })
+        });
     });
-
 })
