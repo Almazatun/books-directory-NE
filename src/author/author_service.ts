@@ -1,26 +1,26 @@
 import validators from "../utils/validators";
 import {Response} from "express";
-import {AuthorsDataAccessLayer} from "./authors_dal";
 import {injectable} from 'tsyringe';
 import {IAuthor} from "../models/author_model";
+import {IAuthorDataAccessLayer} from "./types";
 
 const {validatorCreateNewAuthor} = validators
 
 @injectable()
-export class AuthorsService {
-    authorsDataAccessLayer: AuthorsDataAccessLayer
+export class AuthorService {
+    private authorDataAccessLayer: IAuthorDataAccessLayer;
 
-    constructor(authorsDataAccessLayer: AuthorsDataAccessLayer) {
-        this.authorsDataAccessLayer = authorsDataAccessLayer
+    constructor(authorsDataAccessLayer: IAuthorDataAccessLayer) {
+        this.authorDataAccessLayer = authorsDataAccessLayer;
     }
 
-    async createNewAuthor(firstName: string, lastName: string, res: Response) {
+    public async createNewAuthor(firstName: string, lastName: string, res: Response) {
         const {valid, errors} = validatorCreateNewAuthor(firstName, lastName)
 
         try {
             if (valid) {
                 // Make sure the author does not already exist in database storage
-                const foundAuthorByLastName = await this.authorsDataAccessLayer.findOneAuthorByLastName(lastName)
+                const foundAuthorByLastName = await this.authorDataAccessLayer.findOneAuthorByLastName(lastName)
 
                 if (foundAuthorByLastName) {
                     res.status(400).json({
@@ -28,7 +28,7 @@ export class AuthorsService {
                     })
                 } else  {
                     console.log('AUTHOR_SAVED')
-                    const savedAuthor = await this.authorsDataAccessLayer.saveNewAuthorDB(firstName, lastName)
+                    const savedAuthor = await this.authorDataAccessLayer.saveNewAuthorDB(firstName, lastName)
 
                     res.status(200).json({
                         author: savedAuthor,
@@ -47,10 +47,10 @@ export class AuthorsService {
                 message: "Some error"
             })
         }
-    }
+    };
 
-    async deleteAuthor (userId: string, res: Response) {
-        const deletedAuthor = await this.authorsDataAccessLayer.deleteAuthorDB(userId)
+    public async deleteAuthor (userId: string, res: Response) {
+        const deletedAuthor = await this.authorDataAccessLayer.deleteAuthorDB(userId)
         try {
             if (deletedAuthor) {
                 res.json({
@@ -69,15 +69,15 @@ export class AuthorsService {
                 message: 'Bad request 🤬'
             })
         }
-    }
+    };
 
-    async getAuthors (firstName: string | any, res: Response ): Promise<unknown | IAuthor[]> {
+    public async getAuthors (firstName: string | any, res: Response ): Promise<unknown | IAuthor[]> {
         if (firstName !== null && firstName !== '') {
-            const authors = await this.authorsDataAccessLayer.searchAuthorsByFistName(firstName)
+            const authors = await this.authorDataAccessLayer.searchAuthorsByFistName(firstName)
             return res.json(authors)
         } else {
-            const authors = await this.authorsDataAccessLayer.getAllAuthors()
+            const authors = await this.authorDataAccessLayer.getAllAuthors()
             res.json(authors)
         }
-    }
+    };
 }

@@ -1,8 +1,9 @@
 import Author from "../models/author_model";
+import {IAuthorDataAccessLayer} from "./types";
 
-export class AuthorsDataAccessLayer {
+export class AuthorDataAccessLayer implements IAuthorDataAccessLayer{
 
-    async saveNewAuthorDB(firstName: string, lastName: string) {
+    public async saveNewAuthorDB(firstName: string, lastName: string) {
         const newAuthor = new Author({
             firstName: firstName,
             lastName: lastName,
@@ -13,19 +14,19 @@ export class AuthorsDataAccessLayer {
         return savedAuthor
     }
 
-    async deleteAuthorDB(authorId: string) {
+    public async deleteAuthorDB(authorId: string) {
         const deleteAuthor = await Author.findByIdAndDelete({_id: authorId})
 
         return deleteAuthor
     }
     //In the method included searching option
-    async getAllAuthors () {
+    public async getAllAuthors () {
         const authors = await Author.find()
 
         return authors
     }
 
-    async searchAuthorsByFistName (firstName: string) {
+    public async searchAuthorsByFistName (firstName: string) {
         //Use Regular expression to find particular author or authors
         const searchAuthor = new RegExp(firstName, "i")
 
@@ -34,7 +35,7 @@ export class AuthorsDataAccessLayer {
         return foundAuthors
     }
 
-    async findOneAuthorByLastName (lastName: string) {
+    public async findOneAuthorByLastName (lastName: string) {
 
         const foundAuthor = await Author.findOne({lastName}).exec()
 
