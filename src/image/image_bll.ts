@@ -1,18 +1,17 @@
-import {Response, Request} from "express";
+import {Request, Response} from "express";
 import fs from "fs";
 import path from "path";
 import {coverImageBasePath} from "../models/book_model";
-import {ObjectId} from "mongoose";
 import {injectable} from "tsyringe";
-import {ImagesDataAccessLayer} from "./images_dal";
+import {IImageDataAccessLayer} from "./types";
 
 const uploadPath = path.join('public', coverImageBasePath)
 
 @injectable()
-export class ImagesService {
-    imagesDataAccessLayer: ImagesDataAccessLayer
+export class ImageService {
+    private imagesDataAccessLayer: IImageDataAccessLayer
 
-    constructor(imagesDataAccessLayer: ImagesDataAccessLayer) {
+    constructor(imagesDataAccessLayer: IImageDataAccessLayer) {
         this.imagesDataAccessLayer = imagesDataAccessLayer
     }
 
@@ -81,9 +80,4 @@ export class ImagesService {
             })
         }
     }
-}
-
-//Types
-export interface IUploadFile {
-   file: ObjectId
 }

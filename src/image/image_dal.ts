@@ -1,14 +1,15 @@
 import Image from "../models/image_model";
+import {IImageDataAccessLayer} from "./types";
 
-export class ImagesDataAccessLayer {
+export class ImageDataAccessLayer implements IImageDataAccessLayer {
 
-    async getImages() {
+    public async getImages() {
         const images = await Image.find()
 
         return images
     }
 
-    async createImage(fileName: string, filePath: string) {
+    public async createImage(fileName: string, filePath: string) {
 
         const newImage = new Image({
             fileName: fileName,
@@ -20,7 +21,7 @@ export class ImagesDataAccessLayer {
         return savedImage
     }
 
-    async deleteImage(imageId: string) {
+    public async deleteImage(imageId: string) {
         const deletedImage = await Image.findByIdAndDelete({_id: imageId})
 
         return deletedImage
