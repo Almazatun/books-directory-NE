@@ -15,16 +15,16 @@ var configs_1 = require("./configs");
 var express_session_1 = __importDefault(require("express-session"));
 var connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 var session_1 = require("./configs/session");
-var tsyringe_1 = require("tsyringe");
-var authors_controller_1 = require("./authors/authors_controller");
-var books_controller_1 = require("./books/books_controller");
-var users_controller_1 = require("./users/users_controller");
-var images_controller_1 = require("./images/images_controller");
 var cookie_parser_1 = __importDefault(require("cookie-parser"));
+var user_1 = require("./user");
+var book_1 = require("./book");
+var image_1 = require("./image");
+var author_1 = require("./author");
 //Session db
 var DBSessions = connect_mongodb_session_1.default(express_session_1.default);
 //Create express app
 var app = express_1.default();
+app.use(cookie_parser_1.default());
 app.use('/public', express_1.default.static('public'));
 //Config Object to Avoid Deprecation Warnings
 var dbOptions = {
@@ -58,26 +58,24 @@ var sessionStore = new DBSessions({
     uri: database_1.DB_HOST,
     collection: 'sessions'
 });
-//https://github.com/expressjs/session/issues/633
-app.set('trust proxy', 1);
-app.use(cookie_parser_1.default());
 app.use(express_session_1.default({
+    name: 'cls',
     secret: session_1.SESSION,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: sessionStore,
     cookie: {
         maxAge: session_1.MAX_AGE,
-        //https://github.com/expressjs/session#cookiesecure
-        httpOnly: true
+        httpOnly: true,
+        secure: false
     }
 }));
 //Routes
 app.use("/", index_1.default);
-app.use("/authors", tsyringe_1.container.resolve(authors_controller_1.AuthorsController).routes());
-app.use("/books", tsyringe_1.container.resolve(books_controller_1.BooksController).routes());
-app.use("/images", tsyringe_1.container.resolve(images_controller_1.ImagesController).routes());
-app.use("/users", tsyringe_1.container.resolve(users_controller_1.UsersController).routes());
+app.use("/authors", author_1.authorController.routes());
+app.use("/books", book_1.bookController.routes());
+app.use("/images", image_1.imageController.routes());
+app.use("/users", user_1.userController.routes());
 //Starting server
 app.listen(configs_1.PORT, function () {
     console.log("Listening on port " + configs_1.PORT);
