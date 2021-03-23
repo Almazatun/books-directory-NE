@@ -10,12 +10,11 @@ import {PORT} from "./configs";
 import session from "express-session";
 import mongoDBSession from 'connect-mongodb-session'
 import {MAX_AGE, SESSION} from "./configs/session";
-import {container} from 'tsyringe';
-import {AuthorsController} from "./authors/authors_controller";
-import {ImagesController} from "./images/images_controller";
 import cookieParser from "cookie-parser";
 import {userController} from "./user";
 import {bookController} from "./book";
+import {imageController} from "./image";
+import {authorController} from "./author";
 
 //Session db
 const DBSessions = mongoDBSession(session);
@@ -84,9 +83,9 @@ app.use(session({
 
 //Routes
 app.use("/", IndexRouter);
-app.use("/authors", container.resolve(AuthorsController).routes());
+app.use("/authors", authorController.routes());
 app.use("/books", bookController.routes());
-app.use("/images", container.resolve(ImagesController).routes());
+app.use("/images", imageController.routes());
 app.use("/users", userController.routes());
 
 
