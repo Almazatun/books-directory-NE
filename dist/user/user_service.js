@@ -165,7 +165,8 @@ var UserService = /** @class */ (function () {
                             //Set cookie
                             res.cookie("cls", session_1.SESSION, {
                                 maxAge: session_1.MAX_AGE,
-                                httpOnly: session_1.DEV_MODE === "production",
+                                httpOnly: session_1.DEV_MODE === "production" ? true : false,
+                                secure: false
                             });
                             //Response
                             res.status(200).json({
