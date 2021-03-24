@@ -7,18 +7,11 @@ import IndexRouter from "./routes/index";
 import {DB_HOST} from "./configs/database";
 import {CORS_ALLOW_HOST, CORS_WITH_CREDENTIALS} from "./configs/cors";
 import {PORT} from "./configs";
-import session from "express-session";
-import mongoDBSession from 'connect-mongodb-session'
-import {MAX_AGE, SESSION} from "./configs/session";
 import cookieParser from "cookie-parser";
 import {userController} from "./user";
 import {bookController} from "./book";
 import {imageController} from "./image";
 import {authorController} from "./author";
-
-//Session db
-const DBSessions = mongoDBSession(session);
-
 
 //Create express app
 const app = express();
@@ -58,26 +51,6 @@ app.use(
         origin: CORS_ALLOW_HOST,
         methods: "GET, PUT, POST, DELETE",
         optionsSuccessStatus: 200
-    })
-);
-
-//Store session
-const sessionStore = new DBSessions({
-    uri: DB_HOST,
-    collection: 'sessions'
-});
-
-app.use(session({
-        name: 'cls',
-        secret: SESSION,
-        resave: false,
-        saveUninitialized: false,
-        store: sessionStore,
-        cookie: {
-            maxAge: MAX_AGE,
-            httpOnly: true,
-            secure: false
-        }
     })
 );
 

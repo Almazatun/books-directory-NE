@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import {injectable} from "tsyringe";
 import {INewUserData, IUserDataAccessLayer} from "./types";
 import {IBookDataAccessLayer} from "../book/types";
+import {DEV_MODE, MAX_AGE, SESSION} from "../configs/session";
 
 const {validatorNewUserData, validatorLogIn} = validators
 
@@ -14,8 +15,8 @@ export class UserService {
     private booksDataAccessLayer: IBookDataAccessLayer;
 
     constructor(usersDataAccessLayer: IUserDataAccessLayer, booksDataAccessLayer: IBookDataAccessLayer) {
-        this.usersDataAccessLayer = usersDataAccessLayer
-        this.booksDataAccessLayer = booksDataAccessLayer
+        this.usersDataAccessLayer = usersDataAccessLayer;
+        this.booksDataAccessLayer = booksDataAccessLayer;
     };
 
     public async createNewUser(email: string, userName: string, password: string, res: Response) {
@@ -42,7 +43,7 @@ export class UserService {
                         password
                     }
 
-                    const createdUser = await this.usersDataAccessLayer.createNewUser(newUserData)
+                    await this.usersDataAccessLayer.createNewUser(newUserData)
 
                     res.status(200).json({
                         message: 'Successfully Registered 🎉',
@@ -64,9 +65,9 @@ export class UserService {
 
     public async logIn(email: string, password: string, req: Request, res: Response) {
 
-        const {errors, valid} = validatorLogIn(email, password)
+        const {errors, valid} = validatorLogIn(email, password);
 
-        const user = await this.usersDataAccessLayer.findOneUserByEmail(email)
+        const user = await this.usersDataAccessLayer.findOneUserByEmail(email);
 
         try {
 
@@ -83,7 +84,7 @@ export class UserService {
                     })
                 } else {
                     //Make sure a user password correct
-                    const isMatch = await bcrypt.compare(password, user.password)
+                    const isMatch = await bcrypt.compare(password, user.password);
 
                     //Unless a user password incorrect a user get error message
                     if (!isMatch) {
@@ -91,9 +92,12 @@ export class UserService {
                             errors: ["Wrong credentials 🆘"],
                         })
                     } else {
-                        const sessUser = {id: user.id, name: user.userName, email: user.email};
-                        req.session.user = sessUser; // Auto saves session data in mongo store
-
+                        //Set cookie
+                        res.cookie("cls", SESSION, {
+                            maxAge: MAX_AGE,
+                            httpOnly: DEV_MODE === "production",
+                        });
+                        //Response
                         res.status(200).json({
                             user: user
                         })
@@ -112,14 +116,11 @@ export class UserService {
     public async logOut(req: Request, res: Response) {
 
         try {
-            req.session.destroy((err) => {
+            //Clear cookie
+            res.clearCookie('cls');
 
-                //delete session data from store, using sessionID in cookie
-                if (err) throw err;
-                res.clearCookie("session-id"); // clears cookie containing expired sessionID
-                res.status(200).json({
-                    message: "Logged out successfully"
-                });
+            res.status(200).json({
+                message: "Logged out successfully"
             });
         } catch (error) {
             res.status(500).json({
@@ -130,14 +131,19 @@ export class UserService {
     };
 
     public async autoChecker(req: Request, res: Response) {
+        const cookies = req.cookies
         try {
-            const sessUser = req.session.user;
-            if (sessUser) {
-                res.json({message: " Authenticated Successfully", sessUser});
+            if (cookies) {
+                if (cookies.cls === SESSION){
+                    res.status(200).json({
+                        message: "🟢 Authorized"
+                    })
+                } else {
+                    res.status(401).json({message: "🔴 Unauthorized"});
+                }
             } else {
-                res.status(401).json({message: "Unauthorized"});
+                res.status(401).json({message: "🔴 Unauthorized"});
             }
-
         } catch (error) {
             res.status(500).json({
                 errors: [error],
@@ -164,7 +170,9 @@ export class UserService {
                     message: 'Bad request 🔴',
                 })
             } else {
-                const booksCollection = await this.usersDataAccessLayer.addBookUserCollection(userId, bookId)
+
+                await this.usersDataAccessLayer.addBookUserCollection(userId, bookId)
+
                 res.status(200).json({
                     book: isBook,
                     message: 'Book has been added successfully 🎉',
@@ -204,7 +212,7 @@ export class UserService {
                     message: 'Bad request 🔴',
                 })
             } else {
-               const booksCollection = await this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)
+               await this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)
 
                 res.status(200).json({
                     books: isBook,

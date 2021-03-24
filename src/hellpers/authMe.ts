@@ -1,9 +1,15 @@
 import {NextFunction, Request, Response} from "express";
+import {SESSION} from "../configs/session";
 
 export const authMe = (req: Request, res: Response, next: NextFunction) => {
-    if (req.session.user) {
-        next()
+    const {cookies} = req
+    if ("cls" in cookies ) {
+        if (cookies.cls === SESSION){
+            next()
+        } else {
+            res.status(401).json({message: "🔴 Unauthorized"});
+        }
     } else {
-        res.status(401).json({message: "Unauthorized"});
+        res.status(401).json({message: "🔴 Unauthorized"});
     }
 }
