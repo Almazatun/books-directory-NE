@@ -1,4 +1,5 @@
-import {SEARCH} from "../books/books_dal";
+import {SEARCH} from "../book/types";
+
 
 export function searchStatements (title: string, publishBefore: string, publishAfter: string): SEARCH | null {
 
