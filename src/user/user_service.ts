@@ -95,8 +95,8 @@ export class UserService {
                         //Set cookie
                         res.cookie("cls", SESSION, {
                             maxAge: MAX_AGE,
-                            httpOnly: DEV_MODE === "production" ? true : false,
-                            secure: false
+                            secure: DEV_MODE === "production" ? true : false,
+                            sameSite: "none" as const
                         });
                         //Response
                         res.status(200).json({
