@@ -67,6 +67,8 @@ const sessionStore = new DBSessions({
     collection: 'sessions'
 });
 
+app.set('trust proxy', 1) // trust first proxy
+
 app.use(session({
         name: 'cls',
         secret: SESSION,
@@ -75,8 +77,6 @@ app.use(session({
         store: sessionStore,
         cookie: {
             maxAge: MAX_AGE,
-            httpOnly: true,
-            secure: false
         }
     })
 );
