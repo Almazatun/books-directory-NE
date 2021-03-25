@@ -166,7 +166,9 @@ var UserService = /** @class */ (function () {
                             res.cookie("cls", session_1.SESSION, {
                                 maxAge: session_1.MAX_AGE,
                                 secure: session_1.DEV_MODE === "production",
-                                httpOnly: session_1.DEV_MODE === "production"
+                                httpOnly: session_1.DEV_MODE === "production",
+                                //https://web.dev/samesite-cookies-explained/
+                                sameSite: "lax"
                             });
                             //Response
                             res.status(200).json({

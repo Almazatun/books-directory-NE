@@ -96,7 +96,9 @@ export class UserService {
                         res.cookie("cls", SESSION, {
                             maxAge: MAX_AGE,
                             secure: DEV_MODE === "production",
-                            httpOnly: DEV_MODE === "production"
+                            httpOnly: DEV_MODE === "production",
+                            //https://web.dev/samesite-cookies-explained/
+                            sameSite: "lax"
                         });
                         //Response
                         res.status(200).json({
