@@ -168,7 +168,7 @@ var UserService = /** @class */ (function () {
                                 secure: session_1.DEV_MODE === "production",
                                 httpOnly: session_1.DEV_MODE === "production",
                                 //https://web.dev/samesite-cookies-explained/
-                                sameSite: "lax"
+                                sameSite: "none"
                             });
                             //Response
                             res.status(200).json({

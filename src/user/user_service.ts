@@ -98,7 +98,7 @@ export class UserService {
                             secure: DEV_MODE === "production",
                             httpOnly: DEV_MODE === "production",
                             //https://web.dev/samesite-cookies-explained/
-                            sameSite: "lax"
+                            sameSite: "none"
                         });
                         //Response
                         res.status(200).json({
