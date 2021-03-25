@@ -51,7 +51,7 @@ var BookDataAccessLayer = /** @class */ (function () {
             var books;
             return __generator(this, function (_a) {
                 books = book_model_1.default.find()
-                    .populate('authorBook', ['fistName', 'lastName'])
+                    .populate('authorBook', ['firstName', 'lastName'])
                     .populate('imageBook', ['fileName', 'filePath']);
                 return [2 /*return*/, books];
             });

@@ -5,7 +5,7 @@ import {IBookData, IBookDataAccessLayer, SEARCH} from "./types";
 export class BookDataAccessLayer implements IBookDataAccessLayer{
     public async getAllBooks() {
         const books = Book.find()
-            .populate('authorBook', ['fistName', 'lastName'])
+            .populate('authorBook', ['firstName', 'lastName'])
             .populate('imageBook', ['fileName', 'filePath'])
         return books
     }
