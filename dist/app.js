@@ -21,6 +21,14 @@ var author_1 = require("./author");
 var app = express_1.default();
 app.use(cookie_parser_1.default());
 app.use('/public', express_1.default.static('public'));
+app.use(function (req, res, next) {
+    // @ts-ignore
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    next();
+});
 //Config Object to Avoid Deprecation Warnings
 var dbOptions = {
     useNewUrlParser: true,
