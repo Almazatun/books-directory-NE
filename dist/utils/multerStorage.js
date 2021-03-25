@@ -22,11 +22,12 @@ exports.storage = multer_1.default.diskStorage({
 });
 //Multer option to control which format file should be accepted
 var allowedFileTypes = ['image/jpeg', 'image/svg', 'image/png', 'image/svg'];
+function filterFile(req, file, callback) {
+    callback(null, allowedFileTypes.includes(file.mimetype));
+}
 exports.upload = multer_1.default({
     storage: exports.storage,
-    fileFilter: function (req, file, callback) {
-        callback(null, allowedFileTypes.includes(file.mimetype));
-    },
+    fileFilter: filterFile,
     limits: {
         fieldSize: 1000000
     }

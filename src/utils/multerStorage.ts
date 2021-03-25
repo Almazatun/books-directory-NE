@@ -20,13 +20,15 @@ export const storage = multer.diskStorage({
 });
 
 //Multer option to control which format file should be accepted
-const allowedFileTypes = ['image/jpeg', 'image/svg', 'image/png', 'image/svg']
+const allowedFileTypes = ['image/jpeg', 'image/svg', 'image/png', 'image/svg'];
+
+function filterFile (req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
+    callback(null, allowedFileTypes.includes(file.mimetype))
+}
 
 export const upload = multer({
     storage: storage,
-    fileFilter: function (req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
-        callback(null, allowedFileTypes.includes(file.mimetype))
-    },
+    fileFilter: filterFile,
     limits: {
         fieldSize: 1000000
     }
