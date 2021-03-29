@@ -119,8 +119,11 @@ export class UserService {
 
         try {
             //Clear cookie
-            res.clearCookie('cls', {path: "/"});
-
+            // res.clearCookie('cls', {path: "/"});
+            res.cookie('cls', "", {
+                maxAge: 0,
+                expires: new Date(0)
+            })
             res.status(200).json({
                 message: "Logged out successfully"
             });
