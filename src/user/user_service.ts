@@ -96,9 +96,8 @@ export class UserService {
                         res.cookie("cls", SESSION, {
                             maxAge: MAX_AGE,
                             secure: DEV_MODE === "production",
-                            httpOnly: DEV_MODE === "production",
                             //https://web.dev/samesite-cookies-explained/
-                            sameSite: "none"
+                            sameSite: DEV_MODE === "production" ? "none" : "lax"
                         });
                         //Response
                         res.status(200).json({
@@ -120,7 +119,7 @@ export class UserService {
 
         try {
             //Clear cookie
-            res.clearCookie('cls');
+            res.clearCookie('cls', {path: "/"});
 
             res.status(200).json({
                 message: "Logged out successfully"
@@ -137,7 +136,7 @@ export class UserService {
         const cookies = req.cookies
         try {
             if (cookies) {
-                if (cookies.cls === SESSION){
+                if (cookies.cls === SESSION) {
                     res.status(200).json({
                         message: "🟢 Authorized"
                     })
@@ -155,7 +154,7 @@ export class UserService {
         }
     };
 
-    public async addBookUserBooksCollection (userId: string, bookId: string, res: Response) {
+    public async addBookUserBooksCollection(userId: string, bookId: string, res: Response) {
 
 
         //Make sure the book exist in the database
@@ -189,7 +188,7 @@ export class UserService {
         }
     };
 
-    public async deleteBookUserBooksCollection (userId: string, bookId: string, res: Response) {
+    public async deleteBookUserBooksCollection(userId: string, bookId: string, res: Response) {
 
         //Make sure the book exist in the User book collection
         const isBookInUserCollection: Array<string> | any = await this.usersDataAccessLayer.findBookUserCollection(userId, bookId).catch((error) => {
@@ -215,7 +214,7 @@ export class UserService {
                     message: 'Bad request 🔴',
                 })
             } else {
-               await this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)
+                await this.usersDataAccessLayer.deleteBookUserCollection(userId, bookId)
 
                 res.status(200).json({
                     books: isBook,
@@ -231,21 +230,21 @@ export class UserService {
         }
     };
 
-    public async getUsers (res: Response ) {
-       try {
-           const users = await this.usersDataAccessLayer.getAllUsers()
+    public async getUsers(res: Response) {
+        try {
+            const users = await this.usersDataAccessLayer.getAllUsers()
 
-           res.status(200).json({
-               users: users
-           })
-       } catch (error) {
-           res.status(500).json({
-               error: [error]
-           })
-       }
+            res.status(200).json({
+                users: users
+            })
+        } catch (error) {
+            res.status(500).json({
+                error: [error]
+            })
+        }
     };
 
-    public async updateUserName (userId: string, title: string, res: Response) {
+    public async updateUserName(userId: string, title: string, res: Response) {
 
         //Make sure the user exist
         const foundUserById = await this.usersDataAccessLayer.findOneUserById(userId)
@@ -272,5 +271,5 @@ export class UserService {
             })
         }
     };
-    
+
 }

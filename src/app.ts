@@ -17,7 +17,7 @@ import {authorController} from "./author";
 const app = express();
 
 app.use(cookieParser());
-app.use('/public/uploads/bookCovers', express.static('public/uploads/bookCovers'));
+app.use('/public', express.static('public'));
 
 
 //Config Object to Avoid Deprecation Warnings

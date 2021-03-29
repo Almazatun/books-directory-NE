@@ -4,12 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upload = exports.storage = exports.uploadPath = void 0;
-var path_1 = __importDefault(require("path"));
-var book_model_1 = require("../models/book_model");
 var multer_1 = __importDefault(require("multer"));
 var uuidv4_1 = require("uuidv4");
 //Directory where will be storage images
-exports.uploadPath = path_1.default.join('public', book_model_1.coverImageBasePath);
+exports.uploadPath = 'public';
 //Multer options
 //https://github.com/expressjs/multer
 exports.storage = multer_1.default.diskStorage({

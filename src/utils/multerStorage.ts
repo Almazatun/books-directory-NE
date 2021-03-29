@@ -1,12 +1,10 @@
-import path from "path";
-import {coverImageBasePath} from "../models/book_model";
 import multer from "multer";
 import {Request} from "express";
 import {uuid} from "uuidv4";
 
 
 //Directory where will be storage images
-export const uploadPath = path.join('public', coverImageBasePath)
+export const uploadPath = 'public'
 
 //Multer options
 //https://github.com/expressjs/multer

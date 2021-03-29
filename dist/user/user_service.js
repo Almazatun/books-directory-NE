@@ -166,9 +166,8 @@ var UserService = /** @class */ (function () {
                             res.cookie("cls", session_1.SESSION, {
                                 maxAge: session_1.MAX_AGE,
                                 secure: session_1.DEV_MODE === "production",
-                                httpOnly: session_1.DEV_MODE === "production",
                                 //https://web.dev/samesite-cookies-explained/
-                                sameSite: "none"
+                                sameSite: session_1.DEV_MODE === "production" ? "none" : "lax"
                             });
                             //Response
                             res.status(200).json({
@@ -195,7 +194,7 @@ var UserService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 try {
                     //Clear cookie
-                    res.clearCookie('cls');
+                    res.clearCookie('cls', { path: "/" });
                     res.status(200).json({
                         message: "Logged out successfully"
                     });

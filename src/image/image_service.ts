@@ -1,11 +1,10 @@
 import {Request, Response} from "express";
 import fs from "fs";
 import path from "path";
-import {coverImageBasePath} from "../models/book_model";
 import {injectable} from "tsyringe";
 import {IImageDataAccessLayer} from "./types";
 
-const uploadPath = path.join('public', coverImageBasePath)
+const uploadPath = 'public'
 
 @injectable()
 export class ImageService {

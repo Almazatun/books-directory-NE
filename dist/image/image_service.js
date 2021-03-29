@@ -69,9 +69,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageService = void 0;
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var book_model_1 = require("../models/book_model");
 var tsyringe_1 = require("tsyringe");
-var uploadPath = path_1.default.join('public', book_model_1.coverImageBasePath);
+var uploadPath = 'public';
 var ImageService = /** @class */ (function () {
     function ImageService(imagesDataAccessLayer) {
         this.imageDataAccessLayer = imagesDataAccessLayer;

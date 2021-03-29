@@ -20,7 +20,7 @@ var author_1 = require("./author");
 //Create express app
 var app = express_1.default();
 app.use(cookie_parser_1.default());
-app.use('/public/uploads/bookCovers', express_1.default.static('public/uploads/bookCovers'));
+app.use('/public', express_1.default.static('public'));
 //Config Object to Avoid Deprecation Warnings
 var dbOptions = {
     useNewUrlParser: true,
